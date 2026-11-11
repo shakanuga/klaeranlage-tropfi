@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>html{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Kläranlage mit Tropfi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: Bilderbuch-Querschnitt (oben Nebenweg Schlamm, unten Wasserweg), darunter Erzählkarte, Nahaufnahmen als Dialog, unten Klo-Check */
+:root {
+  --bg: #eaf4f6; --surface: #ffffff; --ink: #163543; --muted: #4a6976; --line: #c4dbe2;
+  --sky: #d9eff6; --cloud: #ffffff; --earth: #cdb48c; --earth-dark: #a98d64; --grass: #79b067; --road: #e4e9e5;
+  --pipe: #7b8c94; --concrete: #d3dde1; --house: #f1d5b2; --roof: #cf5f48; --tower: #b8c4c9;
+  --accent: #ffb320; --accent-ink: #3b2900; --good: #2e8b57; --bad: #c2462f; --recirc: #2b8f88;
+  --sludge: #6a4c2b;
+  --w0: #7b5a33; --w1: #8b7246; --w2: #93885b; --w3: #6c9b7a; --w4: #55a8ba; --w5: #3a9edb;
+  --display: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", Verdana, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1d24; --surface: #15303a; --ink: #e5f2f6; --muted: #9bb8c2; --line: #2b4b57;
+  --sky: #13303b; --cloud: #2c4a56; --earth: #5c4932; --earth-dark: #45361f; --grass: #3e6b38; --road: #22363d;
+  --pipe: #6d8088; --concrete: #3b4f57; --house: #8b6f50; --roof: #a2473a; --tower: #56676e;
+  --accent: #ffc04a; --accent-ink: #2e2000; --good: #5cc98a; --bad: #ff8a72; --recirc: #5cc5bd; --sludge: #4d3720;
+  --w0: #80613a; --w1: #8e784d; --w2: #8f8a5f; --w3: #5f9a73; --w4: #4aa5ba; --w5: #42a8e6;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e1d24; --surface: #15303a; --ink: #e5f2f6; --muted: #9bb8c2; --line: #2b4b57;
+  --sky: #13303b; --cloud: #2c4a56; --earth: #5c4932; --earth-dark: #45361f; --grass: #3e6b38; --road: #22363d;
+  --pipe: #6d8088; --concrete: #3b4f57; --house: #8b6f50; --roof: #a2473a; --tower: #56676e;
+  --accent: #ffc04a; --accent-ink: #2e2000; --good: #5cc98a; --bad: #ff8a72; --recirc: #5cc5bd; --sludge: #4d3720;
+  --w0: #80613a; --w1: #8e784d; --w2: #8f8a5f; --w3: #5f9a73; --w4: #4aa5ba; --w5: #42a8e6;
+  color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 48px; }
+.wrap { max-width: 1040px; margin: 0 auto; display: grid; gap: 22px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 700; }
+h1 span { color: var(--w5); }
+.lead { margin: 6px 0 0; color: var(--muted); max-width: 64ch; }
+
+.stage { border: 3px solid var(--ink); border-radius: 22px; overflow: hidden; background: var(--sky); }
+.stage svg { display: block; width: 100%; height: auto; }
+.sky { fill: var(--sky); } .cloud { fill: var(--cloud); } .sun { fill: var(--accent); }
+.earth { fill: var(--earth); } .grass { fill: var(--grass); } .road { fill: var(--road); }
+.pipe { fill: none; stroke: var(--pipe); stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; }
+.sludgepipe { fill: none; stroke: var(--sludge); stroke-width: 5; stroke-dasharray: 8 7; stroke-linecap: round; stroke-linejoin: round; }
+.gaspipe { fill: none; stroke: var(--accent); stroke-width: 4; stroke-dasharray: 6 5; stroke-linecap: round; stroke-linejoin: round; }
+.recirc { fill: none; stroke: var(--recirc); stroke-width: 4; stroke-dasharray: 8 6; stroke-linecap: round; stroke-linejoin: round; }
+.concrete { fill: var(--concrete); stroke: var(--ink); stroke-width: 2.5; }
+.house { fill: var(--house); stroke: var(--ink); stroke-width: 2.5; } .roof { fill: var(--roof); stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+.win { fill: var(--sky); stroke: var(--ink); stroke-width: 2; }
+.tower { fill: var(--tower); stroke: var(--ink); stroke-width: 2.5; }
+.ink-line { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; fill: none; }
+.sludge { fill: var(--sludge); } .sand { fill: var(--earth-dark); }
+.fat { fill: var(--accent); opacity: .8; }
+.junk1 { fill: var(--roof); } .junk2 { fill: var(--cloud); stroke: var(--ink); stroke-width: 1; } .junk3 { fill: var(--accent); }
+.fish { fill: var(--accent); stroke: var(--ink); stroke-width: 2; }
+.reed { stroke: var(--grass); stroke-width: 4; stroke-linecap: round; }
+.w0 { fill: var(--w0); } .w1 { fill: var(--w1); } .w2 { fill: var(--w2); } .w3 { fill: var(--w3); } .w4 { fill: var(--w4); } .w5 { fill: var(--w5); }
+.svgtext { font-family: var(--display); font-weight: 600; font-size: 13px; fill: var(--ink); }
+.tiny { font-family: var(--display); font-weight: 600; font-size: 12px; fill: var(--ink); }
+.signbox { fill: var(--surface); stroke: var(--sludge); stroke-width: 2; stroke-dasharray: 6 4; }
+
+.st { cursor: pointer; outline: none; }
+.st .hit { fill: transparent; stroke: transparent; stroke-width: 3; stroke-dasharray: 9 7; rx: 14; transition: fill .2s, stroke .2s; }
+.st.side .hit { stroke: color-mix(in srgb, var(--sludge) 70%, transparent); }
+.st:hover .hit { fill: color-mix(in srgb, var(--accent) 14%, transparent); }
+.st:focus-visible .hit { stroke: var(--ink); }
+.st.on .hit { fill: color-mix(in srgb, var(--accent) 22%, transparent); stroke: var(--accent); }
+.badge circle { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; transition: fill .2s; }
+.badge text { font-family: var(--display); font-weight: 700; font-size: 16px; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+.st.side .badge circle { stroke: var(--sludge); stroke-dasharray: 4 3; }
+.st.on .badge circle { fill: var(--accent); }
+.st.on .badge text { fill: var(--accent-ink); }
+
+#tropfi { transition: transform .9s cubic-bezier(.5,-0.2,.3,1.3); pointer-events: none; }
+#tropfiBody { animation: bob 2.4s ease-in-out infinite; }
+#drop { stroke: var(--ink); stroke-width: 2.5; transition: fill .8s; }
+.eye { fill: #fff; } .pupil { fill: #10242c; }
+#mouth { fill: none; stroke: #10242c; stroke-width: 2.5; stroke-linecap: round; }
+.shine { fill: #fff; opacity: .55; }
+@keyframes bob { 50% { transform: translateY(-5px); } }
+.bub { fill: #fff; opacity: 0; animation: rise 2.6s ease-in infinite; }
+.n2bub { fill: none; stroke: #fff; stroke-width: 1.5; opacity: 0; animation: rise 3.4s ease-in infinite; }
+@keyframes rise { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: .85; } 100% { transform: translateY(-52px); opacity: 0; } }
+.fishswim { animation: swim 4s ease-in-out infinite; }
+@keyframes swim { 50% { transform: translateX(-14px); } }
+
+.steps { display: flex; flex-wrap: wrap; gap: 8px; }
+.steps button { font: 600 15px/1 var(--display); color: var(--ink); background: var(--surface); border: 2px solid var(--line);
+  border-radius: 999px; padding: 6px 14px 6px 6px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: border-color .15s, background .15s; }
+.steps button b { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--bg); font-weight: 700; }
+.steps button.side { border-style: dashed; border-color: var(--sludge); }
+.steps button:hover { border-color: var(--ink); }
+.steps button[aria-current="step"] { background: var(--accent); border-color: var(--ink); color: var(--accent-ink); }
+.steps button[aria-current="step"] b { background: var(--surface); color: var(--ink); }
+.steps button.seen:not([aria-current]) b { background: var(--w5); color: #fff; }
+.steps button.side.seen:not([aria-current]) b { background: var(--sludge); }
+
+.card { background: var(--surface); border: 3px solid var(--ink); border-radius: 22px; padding: 22px; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 22px; box-shadow: 6px 6px 0 var(--ink); }
+.eyebrow { font: 600 13px/1.2 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+.card h2 { font-size: clamp(24px, 3.6vw, 32px); }
+.card .body { margin: 10px 0 0; max-width: 62ch; }
+.side-col { display: grid; gap: 14px; align-content: start; }
+.fact { background: color-mix(in srgb, var(--accent) 22%, var(--surface)); border-radius: 16px; padding: 14px 16px; }
+.fact h3 { font-size: 18px; } .fact p { margin: 4px 0 0; font-size: 15.5px; }
+.meter { border: 2px solid var(--line); border-radius: 16px; padding: 12px 16px; }
+.meter .row { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.meter .row span { font: 600 15px var(--display); }
+.meter .row strong { font: 700 15px var(--display); }
+.bar { height: 16px; border-radius: 999px; background: var(--bg); border: 2px solid var(--ink); margin-top: 8px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 5%; transition: width .8s, background-color .8s; }
+.nav { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.btn { font: 600 18px/1 var(--display); padding: 13px 22px; border-radius: 14px; border: 3px solid var(--ink); cursor: pointer; background: var(--surface); color: var(--ink); transition: transform .1s; }
+.btn:active { transform: translateY(2px); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); box-shadow: 3px 3px 0 var(--ink); }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn:focus-visible, .steps button:focus-visible, .choice:focus-visible { outline: 3px solid var(--w5); outline-offset: 2px; }
+
+.game { display: grid; gap: 14px; }
+.game header { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; }
+.game h2 { font-size: clamp(24px, 3.6vw, 32px); }
+.game header p { margin: 4px 0 0; color: var(--muted); }
+.score { font: 700 18px var(--display); background: var(--surface); border: 2px solid var(--ink); border-radius: 999px; padding: 6px 16px; font-variant-numeric: tabular-nums; }
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.item { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 14px; display: grid; gap: 10px; align-content: start; }
+.item h3 { font-size: 19px; }
+.choices { display: flex; gap: 8px; }
+.choice { flex: 1; font: 600 15px/1.1 var(--display); padding: 10px 8px; border-radius: 12px; border: 2px solid var(--ink); background: var(--bg); color: var(--ink); cursor: pointer; }
+.choice:disabled { cursor: default; opacity: .55; }
+.choice.picked { opacity: 1; background: var(--ink); color: var(--surface); }
+.item .res { margin: 0; font-size: 15px; }
+.item.ok { border-color: var(--good); } .item.ok .res b { color: var(--good); }
+.item.no { border-color: var(--bad); } .item.no .res b { color: var(--bad); }
+.reset { justify-self: start; }
+
+/* Detailansicht */
+.detail { position: fixed; inset: 0; z-index: 50; background: color-mix(in srgb, #08161c 62%, transparent); display: flex; justify-content: center; align-items: flex-start; overflow-y: auto;
+  padding-top: max(16px, env(safe-area-inset-top, 0px)); padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.dpanel { background: var(--surface); border: 3px solid var(--ink); border-radius: 22px; width: 100%; max-width: 1000px; padding: 20px; display: grid; gap: 16px; box-shadow: 6px 6px 0 var(--ink); animation: pop .28s ease-out; margin-block: auto; }
+@keyframes pop { from { transform: scale(.94); opacity: 0; } }
+.dhead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.dhead h2 { font-size: clamp(24px, 3.8vw, 34px); }
+.dbody { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.dstage { border: 2px solid var(--ink); border-radius: 16px; overflow: hidden; background: var(--sky); }
+.dstage svg { display: block; width: 100%; height: auto; }
+.dinfo { display: grid; gap: 12px; }
+.dinfo > p { margin: 0; font-weight: 700; }
+.dinfo ul { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; }
+.dinfo li::marker { color: var(--w5); font-size: 1.2em; }
+.dnum { background: color-mix(in srgb, var(--accent) 22%, var(--surface)); border-radius: 16px; padding: 12px 16px; }
+.dnum strong { display: block; font: 700 30px/1.1 var(--display); }
+.dnum span { font-size: 15.5px; }
+.btn.small { font-size: 16px; padding: 10px 16px; }
+.dlabel { font: 600 15px var(--display); fill: var(--ink); }
+.dsmall { font-size: 13px; }
+.dbig { font-size: 20px; font-weight: 700; }
+.onwater { fill: #fff; paint-order: stroke; stroke: rgba(0,0,0,.45); stroke-width: 3px; stroke-linejoin: round; }
+.pipe.thin { stroke-width: 7; }
+.gbub { fill: #fff; opacity: .85; }
+.gasbub { fill: var(--accent); stroke: var(--ink); stroke-width: 1; }
+.bact { fill: var(--grass); stroke: var(--ink); stroke-width: 2; }
+.lupe { fill: color-mix(in srgb, var(--w3) 28%, var(--surface)); }
+.lupering { fill: none; stroke: var(--ink); stroke-width: 6; }
+.zoom { fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 6 6; }
+.rainline { stroke: var(--w5); stroke-width: 3; stroke-linecap: round; }
+.evap { fill: none; stroke: var(--w4); stroke-width: 3; stroke-linecap: round; }
+.sunray { stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+.tok-p { fill: var(--roof); stroke: var(--ink); stroke-width: 1.5; }
+.tok-n { fill: var(--w5); stroke: var(--ink); stroke-width: 1.5; }
+.tok-a { fill: var(--accent); stroke: var(--ink); stroke-width: 1.5; }
+.toktext { font: 700 10px var(--display); fill: #fff; text-anchor: middle; }
+.toktext.dark { fill: #10242c; }
+
+.d-drip { animation: drip 1.1s linear infinite; }
+@keyframes drip { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(32px); opacity: 0; } }
+.d-flow { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 10 22; animation: flow 1s linear infinite; }
+@keyframes flow { to { stroke-dashoffset: -64; } }
+.d-flowline { fill: none; stroke: #fff; stroke-opacity: .55; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 18 30; animation: flow2 1.4s linear infinite; }
+@keyframes flow2 { to { stroke-dashoffset: -96; } }
+.d-spin { transform-box: fill-box; transform-origin: center; animation: spin 1.6s linear infinite; }
+.d-spinv { transform-box: view-box; animation: spin 5s linear infinite; }
+.d-spinslow { animation-duration: 14s; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.d-fall { animation: fall 3.2s ease-in infinite; }
+.d-rain { animation: fall .9s linear infinite; }
+.d-sink { animation: fall 6s linear infinite; }
+@keyframes fall { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translateY(var(--d, 100px)); opacity: 0; } }
+.d-bob2 { animation: bob 2.6s ease-in-out infinite; }
+.d-slide { animation: slide 7s ease-in-out infinite alternate; }
+@keyframes slide { to { transform: translateX(var(--dx, 200px)); } }
+.d-scrape { animation: scrape 9s linear infinite; }
+@keyframes scrape { 0% { transform: translateX(0); opacity: 1; } 85% { transform: translateX(var(--sx, -360px)); opacity: 1; } 88% { transform: translateX(var(--sx, -360px)); opacity: 0; } 100% { transform: translateX(0); opacity: 0; } }
+.d-drift { animation: drift 6s ease-out infinite; }
+@keyframes drift { 0% { transform: translateX(-300px); opacity: 0; } 10% { opacity: 1; } 55%, 68% { transform: translateX(0); opacity: 1; } 90% { transform: translate(-36px, -190px); opacity: 0; } 100% { transform: translate(-36px, -190px); opacity: 0; } }
+.d-rake { animation: rake 6s ease-in-out infinite; }
+@keyframes rake { 0%, 55% { transform: translate(0, 0); opacity: 0; } 60% { opacity: 1; } 90% { transform: translate(-44px, -228px); opacity: 1; } 100% { transform: translate(-44px, -228px); opacity: 0; } }
+.d-rise { animation: rise2 2.8s ease-in infinite; }
+@keyframes rise2 { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: .9; } 100% { transform: translateY(calc(var(--h, 100px) * -1)); opacity: 0; } }
+.d-fatdrift { animation: fatdrift 5s linear infinite; }
+@keyframes fatdrift { 0% { transform: translateX(0); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translateX(var(--fx, 100px)); opacity: 0; } }
+.d-release { animation: release 3.6s ease-out infinite; }
+@keyframes release { 0% { transform: translate(0, 0); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translate(var(--rx, 30px), var(--ry, 0px)); opacity: 0; } }
+.d-swapA { animation: swapA 4.4s ease-in-out infinite; }
+.d-swapB { animation: swapB 4.4s ease-in-out infinite; }
+@keyframes swapA { 0%, 35% { opacity: 1; } 50%, 85% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes swapB { 0%, 35% { opacity: 0; } 50%, 85% { opacity: 1; } 100% { opacity: 0; } }
+.d-wiggle { transform-box: fill-box; transform-origin: center; animation: wig 1.3s ease-in-out infinite alternate; }
+@keyframes wig { from { transform: rotate(-10deg); } to { transform: rotate(10deg) translateX(5px); } }
+.d-eat { transform-box: fill-box; transform-origin: center; animation: eat 4s ease-in infinite; }
+@keyframes eat { 0%, 30% { transform: scale(1); opacity: 1; } 70%, 100% { transform: scale(0); opacity: 0; } }
+.d-prop { transform-box: fill-box; transform-origin: center; animation: prop .45s linear infinite alternate; }
+@keyframes prop { to { transform: scaleX(.12); } }
+.d-propy { transform-box: fill-box; transform-origin: center; animation: propy .4s linear infinite alternate; }
+@keyframes propy { to { transform: scaleY(.12); } }
+.d-glow { animation: glow 1.4s ease-in-out infinite alternate; }
+@keyframes glow { from { opacity: .45; } to { opacity: 1; } }
+.d-halo { animation: halo 1.4s ease-in-out infinite alternate; }
+@keyframes halo { from { opacity: .05; } to { opacity: .4; } }
+.d-swim { animation: swim2 9s linear infinite; }
+@keyframes swim2 { from { transform: translateX(140px); } to { transform: translateX(-640px); } }
+.d-up { animation: up 3s ease-out infinite; }
+@keyframes up { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: .9; } 100% { transform: translateY(-50px); opacity: 0; } }
+
+@media (max-width: 720px) {
+  .dbody { grid-template-columns: 1fr; }
+  .dpanel { padding: 16px; box-shadow: 4px 4px 0 var(--ink); }
+  .card { grid-template-columns: 1fr; padding: 18px; box-shadow: 4px 4px 0 var(--ink); }
+  body { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #tropfiBody, .bub, .n2bub, .fishswim { animation: none; }
+  .bub, .n2bub { opacity: .7; }
+  #tropfi, .bar i { transition: none; }
+  .stage svg *, .dstage *, .dpanel { animation: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Tropfis Reise durch die <span>Kläranlage</span></h1>
+    <p class="lead">Unten fließt das Wasser von Station 1 bis 9. Oben liegt der Nebenweg, auf dem der Schlamm behandelt wird. Tippe auf eine Station, dann siehst du sie in einer bewegten Nahaufnahme. Mit „Weiter“ gehst du Schritt für Schritt.</p>
+  </header>
+
+  <div class="stage">
+    <svg id="scene" viewBox="0 0 1000 540" role="group" aria-label="Querschnitt einer Kläranlage mit Wasserweg und Schlammbehandlung">
+      <rect class="sky" x="0" y="0" width="1000" height="200"/>
+      <g class="cloud"><ellipse cx="160" cy="62" rx="42" ry="16"/><ellipse cx="190" cy="50" rx="28" ry="18"/><ellipse cx="310" cy="118" rx="36" ry="13"/><ellipse cx="334" cy="108" rx="22" ry="14"/></g>
+      <rect class="grass" x="0" y="192" width="1000" height="8"/>
+      <rect class="road" x="0" y="200" width="1000" height="62"/>
+      <rect class="grass" x="0" y="262" width="1000" height="8"/>
+      <rect class="earth" x="0" y="270" width="1000" height="270"/>
+
+      <!-- Leitungen (unter den Becken) -->
+      <path class="pipe" d="M65 262 V300 H842"/>
+      <path class="sludgepipe" d="M351 378 V440 H432 V196"/>
+      <path class="sludgepipe" d="M770 384 V440 H432"/>
+      <path class="sludgepipe" d="M778 384 V468 H452 V350"/>
+      <path class="recirc" d="M690 350 V412 H560 V350"/>
+      <text class="tiny" x="625" y="428" text-anchor="middle">Rezirkulation</text>
+      <text class="tiny" x="600" y="457" text-anchor="middle">Schlamm zur Schlammbehandlung</text>
+      <text class="tiny" x="615" y="485" text-anchor="middle">Rücklaufschlamm</text>
+
+      <!-- Nebenweg Schlamm -->
+      <g class="st side" data-i="9" tabindex="0" role="button" aria-label="Nebenweg: Schlammbehandlung">
+        <rect class="hit" x="398" y="6" width="596" height="192"/>
+        <path class="sludgepipe" d="M482 188 H900"/>
+        <path class="gaspipe" d="M560 60 V48 H660 V168"/>
+        <path class="gaspipe" d="M730 186 H755"/>
+        <rect class="signbox" x="408" y="14" width="236" height="26" rx="13"/>
+        <g class="badge"><circle cx="424" cy="27" r="12"/><text x="424" y="28">S</text></g>
+        <text class="svgtext" x="540" y="32" text-anchor="middle">Nebenweg: Schlamm</text>
+        <rect class="tower" x="412" y="150" width="70" height="46" rx="3"/><ellipse class="tower" cx="447" cy="150" rx="35" ry="6"/>
+        <text class="tiny" x="447" y="138" text-anchor="middle">Eindicker</text>
+        <path class="tower" d="M560 60 C590 60 604 120 604 150 C604 180 588 196 560 196 C532 196 516 180 516 150 C516 120 530 60 560 60 Z"/>
+        <text class="svgtext" x="560" y="146" text-anchor="middle">Faulbehälter</text>
+        <path class="tower" d="M650 196 V176 Q690 132 730 176 V196 Z"/>
+        <text class="tiny" x="702" y="140" text-anchor="middle">Gasspeicher</text>
+        <rect class="concrete" x="812" y="128" width="10" height="28"/>
+        <rect class="house" x="755" y="156" width="80" height="40"/>
+        <text class="svgtext" x="795" y="181" text-anchor="middle">BHKW</text>
+        <rect class="concrete" x="862" y="160" width="60" height="36" rx="4"/>
+        <ellipse cx="892" cy="174" rx="20" ry="8" style="fill:var(--surface);stroke:var(--ink);stroke-width:2"/>
+        <text class="tiny" x="892" y="150" text-anchor="middle">Entwässerung</text>
+        <path class="concrete" d="M930 196 L926 178 H988 L984 196 Z"/>
+        <path class="sludge" d="M932 180 Q957 168 982 180 Z"/>
+      </g>
+
+      <!-- 1 Zuhause -->
+      <g class="st" data-i="0" tabindex="0" role="button" aria-label="Station 1: Zuhause">
+        <rect class="hit" x="8" y="170" width="114" height="360"/>
+        <rect class="house" x="22" y="210" width="60" height="52"/>
+        <path class="roof" d="M16 212 L52 178 L88 212 Z"/>
+        <rect class="win" x="32" y="222" width="16" height="16"/><rect class="win" x="58" y="234" width="14" height="28"/>
+        <rect class="house" x="88" y="228" width="34" height="34"/>
+        <path class="roof" d="M84 230 L105 210 L126 230 Z"/>
+        <rect class="win" x="98" y="238" width="13" height="12"/>
+        <g class="badge"><circle cx="65" cy="512" r="15"/><text x="65" y="513">1</text></g>
+      </g>
+
+      <!-- 2 Rechen -->
+      <g class="st" data-i="1" tabindex="0" role="button" aria-label="Station 2: Rechen">
+        <rect class="hit" x="124" y="262" width="84" height="268"/>
+        <rect class="concrete" x="127" y="272" width="76" height="70" rx="3"/>
+        <rect class="w0" x="133" y="280" width="64" height="56"/>
+        <path class="ink-line" d="M146 266 L162 338 M157 266 L173 338 M168 266 L184 338 M179 266 L195 338" style="stroke-width:2.5"/>
+        <rect class="junk2" x="138" y="300" width="12" height="8" rx="2"/>
+        <circle class="junk3" cx="146" cy="320" r="4"/>
+        <g class="badge"><circle cx="165" cy="512" r="15"/><text x="165" y="513">2</text></g>
+      </g>
+
+      <!-- 3 Sand- und Fettfang -->
+      <g class="st" data-i="2" tabindex="0" role="button" aria-label="Station 3: Sand- und Fettfang">
+        <rect class="hit" x="212" y="262" width="106" height="268"/>
+        <rect class="concrete" x="215" y="272" width="100" height="76" rx="3"/>
+        <rect class="w1" x="221" y="280" width="88" height="62"/>
+        <rect class="fat" x="221" y="280" width="88" height="5"/>
+        <rect class="sand" x="221" y="332" width="88" height="10"/>
+        <circle class="bub" cx="232" cy="330" r="3"/><circle class="bub" cx="252" cy="330" r="2.5" style="animation-delay:.8s"/>
+        <circle class="bub" cx="276" cy="330" r="3" style="animation-delay:1.5s"/><circle class="bub" cx="296" cy="330" r="2.5" style="animation-delay:.4s"/>
+        <rect class="concrete" x="236" y="264" width="36" height="8" rx="2"/>
+        <line class="ink-line" x1="246" y1="272" x2="246" y2="334" style="stroke-width:2"/>
+        <rect x="264" y="272" width="4" height="12" style="fill:var(--accent);stroke:var(--ink);stroke-width:1.5"/>
+        <g class="badge"><circle cx="265" cy="512" r="15"/><text x="265" y="513">3</text></g>
+      </g>
+
+      <!-- 4 Vorklärbecken -->
+      <g class="st" data-i="3" tabindex="0" role="button" aria-label="Station 4: Vorklärbecken">
+        <rect class="hit" x="321" y="262" width="108" height="268"/>
+        <path class="concrete" d="M325 272 H425 V350 H366 L356 378 H346 L336 350 H325 Z"/>
+        <path class="w2" d="M331 280 H419 V344 H362 L354 370 H348 L340 344 H331 Z"/>
+        <rect class="sludge" x="331" y="340" width="88" height="4"/>
+        <path class="sludge" d="M340 344 H362 L354 370 H348 Z"/>
+        <g class="badge"><circle cx="375" cy="512" r="15"/><text x="375" y="513">4</text></g>
+      </g>
+
+      <!-- Biologie: gemeinsamer Beckenblock -->
+      <rect class="concrete" x="440" y="272" width="272" height="80" rx="3"/>
+
+      <!-- 5 Bio-P -->
+      <g class="st" data-i="4" tabindex="0" role="button" aria-label="Station 5: Bio-P-Becken">
+        <rect class="hit" x="438" y="262" width="82" height="268"/>
+        <rect class="w2" x="446" y="280" width="72" height="66"/>
+        <rect class="concrete" x="454" y="318" width="20" height="9" rx="4"/>
+        <ellipse class="concrete d-propy" cx="480" cy="322" rx="2.5" ry="9"/>
+        <g class="badge"><circle cx="479" cy="512" r="15"/><text x="479" y="513">5</text></g>
+      </g>
+
+      <!-- 6 Deni -->
+      <g class="st" data-i="5" tabindex="0" role="button" aria-label="Station 6: Deni-Becken">
+        <rect class="hit" x="520" y="262" width="88" height="268"/>
+        <rect class="w3" x="524" y="280" width="82" height="66"/>
+        <rect class="concrete" x="532" y="318" width="20" height="9" rx="4"/>
+        <ellipse class="concrete d-propy" cx="558" cy="322" rx="2.5" ry="9"/>
+        <circle class="n2bub" cx="574" cy="330" r="3"/><circle class="n2bub" cx="588" cy="330" r="2.5" style="animation-delay:1.2s"/><circle class="n2bub" cx="596" cy="330" r="3" style="animation-delay:2.2s"/>
+        <g class="badge"><circle cx="564" cy="512" r="15"/><text x="564" y="513">6</text></g>
+      </g>
+
+      <!-- 7 Nitri -->
+      <g class="st" data-i="6" tabindex="0" role="button" aria-label="Station 7: Nitri-Becken">
+        <rect class="hit" x="608" y="262" width="106" height="268"/>
+        <rect class="w3" x="612" y="280" width="94" height="66"/>
+        <line class="ink-line" x1="618" y1="342" x2="700" y2="342" style="stroke-width:2.5"/>
+        <circle class="bub" cx="624" cy="338" r="3.5"/><circle class="bub" cx="638" cy="338" r="3" style="animation-delay:.6s"/>
+        <circle class="bub" cx="652" cy="338" r="4" style="animation-delay:1.3s"/><circle class="bub" cx="666" cy="338" r="3" style="animation-delay:.3s"/>
+        <circle class="bub" cx="680" cy="338" r="3.5" style="animation-delay:1.8s"/><circle class="bub" cx="694" cy="338" r="3" style="animation-delay:.9s"/>
+        <g class="badge"><circle cx="660" cy="512" r="15"/><text x="660" y="513">7</text></g>
+      </g>
+
+      <!-- 8 Nachklärbecken -->
+      <g class="st" data-i="7" tabindex="0" role="button" aria-label="Station 8: Nachklärbecken">
+        <rect class="hit" x="718" y="262" width="114" height="268"/>
+        <path class="concrete" d="M724 272 H824 V340 L780 384 H768 L724 340 Z"/>
+        <path class="w4" d="M730 280 H818 V337 L778 376 H770 L730 337 Z"/>
+        <rect x="764" y="280" width="20" height="26" style="fill:none;stroke:var(--ink);stroke-width:2"/>
+        <g class="sludge"><circle cx="748" cy="340" r="3"/><circle cx="762" cy="352" r="3.5"/><circle cx="786" cy="352" r="3"/><circle cx="800" cy="340" r="3"/><circle cx="774" cy="366" r="3"/></g>
+        <g class="badge"><circle cx="774" cy="512" r="15"/><text x="774" y="513">8</text></g>
+      </g>
+
+      <!-- 9 Fluss -->
+      <g class="st" data-i="8" tabindex="0" role="button" aria-label="Station 9: Fluss">
+        <rect class="hit" x="836" y="262" width="162" height="276"/>
+        <path class="w5" d="M842 540 V322 Q870 306 910 316 T1000 308 V540 Z"/>
+        <line class="reed" x1="852" y1="314" x2="848" y2="278"/><line class="reed" x1="862" y1="314" x2="866" y2="270"/>
+        <line class="reed" x1="988" y1="306" x2="992" y2="272"/>
+        <g class="fishswim"><path class="fish" d="M950 420 Q966 408 982 420 Q966 432 950 420 Z M982 420 L994 412 L994 428 Z"/><circle cx="957" cy="418" r="2" fill="#10242c"/></g>
+        <g class="badge"><circle cx="922" cy="512" r="15"/><text x="922" y="513">9</text></g>
+      </g>
+
+      <!-- Tropfi -->
+      <g id="tropfi" style="transform: translate(65px,150px)">
+        <g id="tropfiBody">
+          <path id="drop" d="M0 -27 C10 -13 21 -3 21 8 C21 21 11 29 0 29 C-11 29 -21 21 -21 8 C-21 -3 -10 -13 0 -27 Z" style="fill: var(--w0)"/>
+          <ellipse class="shine" cx="-9" cy="-2" rx="3.5" ry="6" transform="rotate(25 -9 -2)"/>
+          <circle class="eye" cx="-7" cy="7" r="5"/><circle class="eye" cx="7" cy="7" r="5"/>
+          <circle class="pupil" cx="-6" cy="8" r="2.5"/><circle class="pupil" cx="8" cy="8" r="2.5"/>
+          <path id="mouth" d="M-6 20 Q0 15 6 20"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <nav class="steps" id="steps" aria-label="Stationen"></nav>
+
+  <section class="card" aria-live="polite">
+    <div>
+      <p class="eyebrow" id="eyebrow"></p>
+      <h2 id="title"></h2>
+      <p class="body" id="text"></p>
+    </div>
+    <div class="side-col">
+      <div class="fact"><h3>Wusstest du?</h3><p id="fact"></p></div>
+      <div class="meter">
+        <div class="row"><span>Wie sauber ist Tropfi?</span><strong id="cleanLabel"></strong></div>
+        <div class="bar"><i id="cleanBar"></i></div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn" id="prev" type="button">Zurück</button>
+      <button class="btn" id="zoomBtn" type="button">Genauer ansehen</button>
+      <button class="btn primary" id="next" type="button">Weiter</button>
+    </div>
+  </section>
+
+  <section class="game" id="game">
+    <header>
+      <div>
+        <h2>Klo-Check: Was darf ins Klo?</h2>
+        <p>Entscheide bei jedem Ding: Klo oder Mülleimer?</p>
+      </div>
+      <div class="score" id="score">0 von 9 richtig</div>
+    </header>
+    <div class="items" id="items"></div>
+    <button class="btn reset" id="reset" type="button">Nochmal spielen</button>
+  </section>
+</div>
+
+<div class="detail" id="detail" hidden>
+  <div class="dpanel" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+    <div class="dhead">
+      <div><p class="eyebrow" id="dEyebrow"></p><h2 id="dTitle"></h2></div>
+      <button class="btn small" id="dClose" type="button">Schließen</button>
+    </div>
+    <div class="dbody">
+      <div class="dstage"><svg id="dSvg" viewBox="0 0 600 340" role="img" aria-label="Animierte Nahaufnahme der Station"></svg></div>
+      <div class="dinfo">
+        <p id="dLead"></p>
+        <ul id="dList"></ul>
+        <div class="dnum"><strong id="dNum"></strong><span id="dNumText"></span></div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn small" id="dPrev" type="button">← Vorige Station</button>
+      <button class="btn small primary" id="dNext" type="button">Nächste Station →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const stations = [
+  { short: "Zuhause", badge: "1", title: "Ab ins Rohr!", pos: [65, 150], pct: 6, lbl: "Igitt, total dreckig", col: "--w0",
+    text: "Hallo, ich bin Tropfi! Gerade wurde ich in einem Haus die Toilette hinuntergespült. Zusammen mit dem Wasser aus Dusche, Waschmaschine und Spüle fließe ich durch dicke Rohre unter der Straße. Diese Rohre heißen Kanal. Am Ende wartet die Kläranlage auf mich.",
+    fact: "Jeder Mensch in Deutschland braucht ungefähr 125 Liter Wasser am Tag. Das ist fast eine ganze Badewanne voll." },
+  { short: "Rechen", badge: "2", title: "Der Rechen", pos: [165, 228], pct: 16, lbl: "Grobes ist raus", col: "--w0",
+    text: "Zuerst komme ich an ein Gitter mit ganz engen Stäben. Es hält alles Grobe fest: Feuchttücher, Windeln, Stöcke und manchmal sogar Spielzeug. Der Rechen hebt den Müll aus dem Wasser. Danach wird er gewaschen, ausgepresst und verbrannt.",
+    fact: "Feuchttücher zerfallen nicht wie Klopapier. Sie wickeln sich um die Pumpen und legen sie lahm." },
+  { short: "Sand- & Fettfang", badge: "3", title: "Der Sand- und Fettfang", pos: [265, 228], pct: 26, lbl: "Sand und Fett sind raus", col: "--w1",
+    text: "Jetzt komme ich in ein langes Becken. Von einer Seite wird Luft hineingeblasen, deshalb dreht sich das Wasser wie eine Walze. Schwerer Sand fällt in eine Rinne am Boden und wird abgepumpt. Das leichte Fett treibt in eine ruhige Kammer daneben. Dort schiebt es ein Räumer zusammen.",
+    fact: "Sand würde die Pumpen abschleifen wie Schmirgelpapier. Darum muss er ganz früh raus." },
+  { short: "Vorklärung", badge: "4", title: "Das Vorklärbecken", pos: [375, 228], pct: 38, lbl: "Noch trüb", col: "--w2",
+    text: "Hier fließe ich ganz langsam. Schwere Schmutzteilchen sinken nach unten und werden zu Schlamm. Ein Räumer schiebt den Schlamm in einen Trichter. Von dort nimmt er einen eigenen Weg: zur Schlammbehandlung.",
+    fact: "Nach diesem Becken ist schon etwa ein Drittel des Schmutzes weg. Ganz ohne Chemie, nur durch Warten." },
+  { short: "Bio-P", badge: "5", bio: true, title: "Biologie 1: Das Becken ohne Luft", pos: [479, 228], pct: 44, lbl: "Noch trüb", col: "--w2",
+    text: "Jetzt beginnt die Biologie, und hier treffe ich Milliarden Bakterien. Sie kommen als Rücklaufschlamm aus dem Nachklärbecken zurück. In diesem Becken wird nur gerührt, Luft gibt es keine. Einige Bakterien fressen sich trotzdem voll und geben dabei Phosphor ab. Das klingt komisch, ist aber ein Trick: Später nehmen sie umso mehr davon wieder auf.",
+    fact: "Phosphor ist ein Dünger. Kommt zu viel davon in den Fluss, wachsen dort so viele Algen, dass den Fischen die Luft knapp wird." },
+  { short: "Deni", badge: "6", bio: true, title: "Biologie 2: Die Denitrifikation", pos: [564, 228], pct: 60, lbl: "Viel besser", col: "--w3",
+    text: "Auch hier wird nur gerührt. Aus dem nächsten Becken wird Wasser mit Nitrat zurückgepumpt. Die Bakterien hier haben einen Trick: Wenn keine Luft da ist, holen sie sich den Sauerstoff einfach aus dem Nitrat. Übrig bleibt Stickstoffgas, das nach oben in die Luft blubbert.",
+    fact: "Die Luft, die du atmest, besteht zu 78 Prozent aus Stickstoff. Das Gas aus diesem Becken ist also völlig harmlos." },
+  { short: "Nitri", badge: "7", bio: true, title: "Biologie 3: Das belüftete Becken", pos: [660, 228], pct: 80, lbl: "Fast sauber", col: "--w3",
+    text: "Hier blubbert es überall! Von unten wird Luft hineingeblasen. Die Bakterien atmen den Sauerstoff und fressen den restlichen Schmutz. Besondere Bakterien verwandeln das Ammonium aus dem Pipi in Nitrat. Ein Teil des Wassers wird deshalb zurück ins Deni-Becken gepumpt. Und die Bakterien aus dem ersten Becken nehmen jetzt viel Phosphor auf.",
+    fact: "Die Gebläse für die Luft brauchen ungefähr die Hälfte des ganzen Stroms der Kläranlage." },
+  { short: "Nachklärung", badge: "8", title: "Das Nachklärbecken", pos: [774, 228], pct: 94, lbl: "Klar!", col: "--w4",
+    text: "Die Bakterien kleben zu Flocken zusammen und sinken nach unten. Die meisten wandern als Rücklaufschlamm zurück an den Anfang der Biologie. Weil sie sich vermehren, sind es aber immer zu viele. Der Rest heißt Überschussschlamm und geht zur Schlammbehandlung. Oben läuft klares Wasser ab. Das bin ich!",
+    fact: "Jetzt sieht das Wasser fast so aus wie aus dem Wasserhahn. Trinken darf man es aber trotzdem nicht." },
+  { short: "Fluss", badge: "9", title: "Geschafft!", pos: [925, 360], pct: 100, lbl: "Blitzsauber!", col: "--w5",
+    text: "Sauber fließe ich in den Fluss, und die Fische freuen sich. Ich reise weiter, vielleicht sogar bis ins Meer. Irgendwann verdunste ich in der Sonne, werde zu einer Wolke und regne wieder herunter. Dann beginnt der Wasserkreislauf von vorn.",
+    fact: "Du kannst der Kläranlage helfen: Ins Klo gehören nur Pipi, Kacka und Klopapier. Probier unten den Klo-Check aus!" },
+  { short: "Schlamm", badge: "S", side: true, title: "Nebenweg: Die Schlammbehandlung", pos: [560, 228], pct: 100, lbl: "Tropfi schaut nur zu", col: "--w5",
+    text: "Ich bin fertig, aber was passiert mit dem ganzen Schlamm aus Vor- und Nachklärung? Er nimmt einen eigenen Weg. Zuerst wird er eingedickt. Dann bleibt er etwa drei Wochen im eiförmigen Faulbehälter. Dort ist es warm, dunkel und ohne Luft. Bakterien machen aus dem Schlamm Biogas, und ein kleines Kraftwerk macht daraus Strom und Wärme.",
+    fact: "Im Faulbehälter ist es etwa 37 Grad warm, also so warm wie in deinem Bauch. Die Wärme dafür kommt aus dem eigenen Kraftwerk." }
+];
+const MAIN = 9;
+
+const $ = id => document.getElementById(id);
+const steps = $("steps");
+const seen = new Set();
+let cur = 0;
+
+stations.forEach((s, i) => {
+  const b = document.createElement("button");
+  b.type = "button";
+  if (s.side) b.className = "side";
+  b.innerHTML = `<b>${s.badge}</b>${s.short}${s.side ? " (Nebenweg)" : ""}`;
+  b.addEventListener("click", () => go(i));
+  steps.appendChild(b);
+});
+document.querySelectorAll(".st").forEach(g => {
+  const i = +g.dataset.i;
+  g.addEventListener("click", () => openDetail(i));
+  g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDetail(i); } });
+});
+
+function eyebrowFor(s, i) {
+  if (s.side) return "Nebenweg · Schlammbehandlung";
+  return `Station ${i + 1} von ${MAIN}` + (s.bio ? " · Biologische Stufe" : "");
+}
+function nextLabel(i) {
+  if (i === MAIN - 1) return "Zum Nebenweg: Schlamm";
+  if (i === stations.length - 1) return "Nochmal von vorn";
+  return "Weiter";
+}
+
+function go(i) {
+  cur = Math.max(0, Math.min(stations.length - 1, i));
+  seen.add(cur);
+  const s = stations[cur];
+  $("eyebrow").textContent = eyebrowFor(s, cur);
+  $("title").textContent = s.title;
+  $("text").textContent = s.text;
+  $("fact").textContent = s.fact;
+  $("cleanLabel").textContent = s.lbl;
+  const bar = $("cleanBar");
+  bar.style.width = s.pct + "%";
+  bar.style.backgroundColor = `var(${s.col})`;
+  $("drop").style.fill = `var(${s.col})`;
+  $("mouth").setAttribute("d", s.pct >= 60 ? "M-7 17 Q0 24 7 17" : s.pct >= 26 ? "M-6 19 H6" : "M-6 20 Q0 15 6 20");
+  $("tropfi").style.transform = `translate(${s.pos[0]}px, ${s.pos[1]}px)`;
+  document.querySelectorAll(".st").forEach(g => g.classList.toggle("on", +g.dataset.i === cur));
+  [...steps.children].forEach((b, j) => {
+    b.classList.toggle("seen", seen.has(j));
+    if (j === cur) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
+  });
+  $("prev").disabled = cur === 0;
+  $("next").textContent = nextLabel(cur);
+}
+$("prev").addEventListener("click", () => go(cur - 1));
+$("next").addEventListener("click", () => go(cur === stations.length - 1 ? 0 : cur + 1));
+document.addEventListener("keydown", e => {
+  if (!$("detail").hidden) return;
+  if (e.target.closest && e.target.closest("button, .st")) return;
+  if (e.key === "ArrowRight") go(cur + 1);
+  if (e.key === "ArrowLeft") go(cur - 1);
+});
+
+const things = [
+  { name: "Klopapier", ok: "klo", why: "Klopapier zerfällt im Wasser ganz schnell in kleine Fetzen." },
+  { name: "Pipi und Kacka", ok: "klo", why: "Genau dafür ist das Klo da." },
+  { name: "Feuchttücher", ok: "muell", why: "Sie zerfallen nicht und verstopfen die Pumpen." },
+  { name: "Essensreste", ok: "muell", why: "Die gehören in die Biotonne. Im Kanal locken sie Ratten an." },
+  { name: "Bratfett", ok: "muell", why: "Fett wird im kalten Rohr hart wie Kerzenwachs und verstopft alles." },
+  { name: "Wattestäbchen", ok: "muell", why: "Sie sind so dünn, dass sie durch den Rechen rutschen können." },
+  { name: "Haare", ok: "muell", why: "Haare verknoten sich in den Rohren zu dicken Zöpfen." },
+  { name: "Pflaster", ok: "muell", why: "Pflaster kleben überall fest und zerfallen nicht." },
+  { name: "Alte Medizin", ok: "muell", why: "Die Kläranlage kann sie nicht ganz herausholen. Frag einen Erwachsenen, wohin damit." }
+];
+let answers = {};
+function renderGame() {
+  const box = $("items");
+  box.innerHTML = "";
+  things.forEach((t, i) => {
+    const a = answers[i];
+    const el = document.createElement("div");
+    el.className = "item" + (a ? (a === t.ok ? " ok" : " no") : "");
+    el.innerHTML = `<h3>${t.name}</h3>
+      <div class="choices">
+        <button type="button" class="choice${a === "klo" ? " picked" : ""}" id="c${i}k" ${a ? "disabled" : ""}>Ins Klo</button>
+        <button type="button" class="choice${a === "muell" ? " picked" : ""}" id="c${i}m" ${a ? "disabled" : ""}>In den Müll</button>
+      </div>
+      ${a ? `<p class="res"><b>${a === t.ok ? "Richtig!" : "Leider falsch."}</b> ${t.why}</p>` : ""}`;
+    box.appendChild(el);
+    el.querySelector(`#c${i}k`).addEventListener("click", () => { answers[i] = "klo"; renderGame(); });
+    el.querySelector(`#c${i}m`).addEventListener("click", () => { answers[i] = "muell"; renderGame(); });
+  });
+  const right = things.filter((t, i) => answers[i] === t.ok).length;
+  const done = Object.keys(answers).length;
+  $("score").textContent = done === things.length && right === things.length
+    ? `Alle ${right} richtig! Super!` : `${right} von ${things.length} richtig`;
+}
+$("reset").addEventListener("click", () => { answers = {}; renderGame(); });
+
+/* ---------- Detailansichten ---------- */
+const R = (n, f) => Array.from({ length: n }, (_, k) => f(k)).join("");
+const L = (x, y, t, cls = "", anchor = "start") => `<text class="dlabel ${cls}" x="${x}" y="${y}" text-anchor="${anchor}">${t}</text>`;
+const ground = (skyH) => `<rect class="sky" width="600" height="${skyH}"/><rect class="earth" y="${skyH - 4}" width="600" height="${344 - skyH}"/><rect class="grass" y="${skyH - 8}" width="600" height="8"/>`;
+const fish = (x, y) => `<path class="fish" d="M${x} ${y} q16 -12 32 0 q-16 12 -32 0 z M${x + 32} ${y} l12 -8 v16 z"/><circle cx="${x + 7}" cy="${y - 2}" r="2" fill="#10242c"/>`;
+const bact = (x, y, rot, del) => `<g transform="translate(${x} ${y}) rotate(${rot})"><g class="d-wiggle" style="animation-delay:${del}s"><rect class="bact" x="-18" y="-9" width="36" height="18" rx="9"/><path class="ink-line" d="M18 0 q7 -6 13 0 t12 0" style="stroke-width:2"/></g></g>`;
+const tok = (x, y, cls, label, dark = false) => `<circle class="${cls}" cx="${x}" cy="${y}" r="11"/><text class="toktext${dark ? " dark" : ""}" x="${x}" y="${y + 3.5}">${label}</text>`;
+const bioTank = (water) => `<rect class="concrete" x="20" y="74" width="280" height="240" rx="6"/><rect class="${water}" x="30" y="84" width="260" height="220"/>`;
+const mixer = (x, y) => `<line class="ink-line" x1="${x}" y1="58" x2="${x}" y2="${y + 4}" style="stroke-width:3"/><rect class="concrete" x="${x}" y="${y - 9}" width="40" height="18" rx="9"/><ellipse class="concrete d-propy" cx="${x + 46}" cy="${y}" rx="4" ry="20"/>`;
+const lupe = (id, inner) => `<rect x="236" y="146" width="48" height="88" rx="6" class="zoom"/><path class="zoom" d="M284 146 L372 86 M284 234 L372 270"/>
+  <circle class="lupe" cx="455" cy="178" r="118"/><clipPath id="${id}"><circle cx="455" cy="178" r="115"/></clipPath>
+  <g clip-path="url(#${id})">${inner}</g><circle class="lupering" cx="455" cy="178" r="118"/>`;
+
+const details = [
+  { title: "Zuhause",
+    svg: `${ground(210)}
+      <path class="roof" d="M44 52 L190 10 L336 52 Z"/>
+      <rect class="house" x="58" y="50" width="264" height="152"/>
+      <line class="ink-line" x1="58" y1="126" x2="322" y2="126" style="stroke-width:2.5"/>
+      <path class="pipe thin" d="M150 120 H300 M258 110 V120 M140 196 H300 M268 190 H300 M300 66 V262"/>
+      <path class="d-flow" style="stroke:var(--w0)" d="M150 120 H300 V262"/>
+      <path class="d-flow" style="stroke:var(--w0);animation-delay:-.5s" d="M140 196 H300"/>
+      <path class="ink-line" d="M96 60 V72 H116" style="stroke-width:2.5"/>
+      <rect class="concrete" x="112" y="70" width="24" height="7" rx="3"/>
+      ${R(5, k => `<circle class="w4 d-drip" cx="${115 + k * 4.5}" cy="84" r="2.5" style="animation-delay:${(k * 0.22).toFixed(2)}s"/>`)}
+      <rect class="concrete" x="94" y="112" width="60" height="9" rx="3"/>
+      ${L(142, 66, "Dusche")}
+      <path class="concrete" d="M220 96 H268 L262 110 H226 Z"/>
+      <path class="ink-line" d="M244 96 V84 H254" style="stroke-width:2.5"/>
+      <circle class="w4 d-drip" cx="254" cy="90" r="2.5" style="animation-duration:1.6s"/>
+      ${L(214, 104, "Spüle", "", "end")}
+      <rect class="concrete" x="92" y="140" width="24" height="30" rx="3"/>
+      <path class="concrete" d="M112 170 H156 Q156 192 132 194 H120 Z"/>
+      <rect class="concrete" x="120" y="192" width="18" height="8"/>
+      ${L(162, 162, "Klo")}
+      <rect class="concrete" x="212" y="144" width="52" height="56" rx="4"/>
+      <circle class="win" cx="238" cy="174" r="17"/>
+      <circle class="d-spin" cx="238" cy="174" r="10" style="fill:none;stroke:var(--w4);stroke-width:4;stroke-dasharray:8 6"/>
+      ${L(238, 140, "Waschmaschine", "", "middle")}
+      <rect class="concrete" x="270" y="248" width="340" height="48" rx="24"/>
+      <rect class="w0" x="282" y="268" width="320" height="22" rx="6"/>
+      <path class="d-flowline" d="M290 279 H600"/>
+      ${L(440, 326, "Kanal unter der Straße", "", "middle")}
+      ${L(590, 236, "zur Kläranlage →", "", "end")}`,
+    lead: "Alles Wasser, das im Haus im Abfluss verschwindet, landet im Kanal. Hier beginnt Tropfis Reise.",
+    list: ["Ungefähr ein Viertel unseres Wassers spülen wir das Klo hinunter.",
+           "Im Mischsystem fließt auch das Regenwasser von Dächern und Straßen in denselben Kanal. Im Trennsystem hat es einen eigenen Kanal.",
+           "Wo es bergab geht, fließt das Abwasser von allein. Sonst helfen Pumpwerke nach."],
+    num: "15-mal", numText: "um die Erde würden alle öffentlichen Kanäle in Deutschland reichen, wenn man sie aneinanderlegt." },
+
+  { title: "Der Rechen",
+    svg: `${ground(64)}
+      <rect class="concrete" x="440" y="18" width="130" height="40" rx="4"/>
+      ${L(505, 44, "Waschpresse", "dsmall", "middle")}
+      <rect class="concrete" x="10" y="100" width="580" height="210" rx="6"/>
+      <rect class="w0" x="20" y="120" width="560" height="180"/>
+      <path class="d-flowline" d="M30 196 H330 M30 248 H330 M30 284 H330 M430 210 H580 M430 262 H580"/>
+      <path class="ink-line" d="M346 72 L390 300 M358 72 L402 300 M370 72 L414 300" style="stroke-width:4"/>
+      <g class="d-drift">
+        <rect class="junk2" x="326" y="148" width="28" height="20" rx="3"/>
+        <path class="junk1" d="M330 198 h16 v18 q0 10 -10 10 h-16 v-9 h10 z"/>
+        <line x1="290" y1="286" x2="364" y2="290" style="stroke:var(--sludge);stroke-width:6;stroke-linecap:round"/>
+        <circle class="junk3" cx="350" cy="262" r="11"/><circle class="junk3" cx="360" cy="250" r="7"/>
+        <path d="M366 249 l9 2 l-9 3 z" style="fill:var(--roof)"/>
+      </g>
+      <g class="d-rake"><path class="ink-line" d="M346 300 H402 M352 300 V288 M364 300 V288 M376 300 V288 M388 300 V288 M400 300 V288" style="stroke-width:4"/></g>
+      ${L(30, 150, "Abwasser fließt hinein →", "onwater")}
+      ${L(430, 170, "→ ohne groben Müll", "onwater")}
+      ${L(336, 92, "Rechen", "", "end")}`,
+    lead: "Der Rechen ist wie ein riesiger Kamm, der den groben Müll aus dem Wasser kämmt.",
+    list: ["Oft gibt es zuerst einen Grobrechen mit großen Lücken und danach einen Feinrechen.",
+           "Eine Räumharke hebt das Rechengut automatisch aus dem Wasser.",
+           "In der Rechengut-Waschpresse wird es gewaschen und ausgepresst. Danach wird es verbrannt."],
+    num: "6 mm", numText: "Lücke zwischen den Stäben beim Feinrechen. Das ist dünner als ein Bleistift!" },
+
+  { title: "Der Sand- und Fettfang",
+    svg: `${ground(48)}
+      ${L(115, 24, "Querschnitt", "", "middle")}
+      ${L(415, 24, "Längsschnitt", "", "middle")}
+      <!-- Querschnitt -->
+      <rect class="concrete" x="16" y="46" width="206" height="202" rx="4"/>
+      <path class="w1" d="M24 54 H156 V178 L56 212 V240 H24 Z"/>
+      <rect class="w1" x="155" y="58" width="11" height="16"/>
+      <path class="w1" d="M164 54 H214 V150 H164 Z"/>
+      <rect class="sand" x="24" y="224" width="32" height="16"/>
+      <circle cx="92" cy="128" r="44" class="d-spinv" style="transform-origin:92px 128px;fill:none;stroke:#fff;stroke-opacity:.6;stroke-width:4;stroke-dasharray:22 14"/>
+      ${L(92, 133, "Walze", "onwater dsmall", "middle")}
+      <rect class="concrete" x="25" y="198" width="14" height="6" rx="2"/>
+      ${R(7, k => `<circle class="gbub d-rise" cx="${30 + (k % 3) * 3}" cy="196" r="${2.5 + (k % 2)}" style="--h:${130 + (k % 3) * 8}px;animation-delay:${(-k * 0.38).toFixed(2)}s"/>`)}
+      ${R(6, k => { const y = 120 + (k % 3) * 18; return `<circle class="sand d-fall" cx="${62 + k * 11}" cy="${y}" r="2.6" style="--d:${222 - y}px;animation-delay:${(-k * 0.5).toFixed(1)}s"/>`; })}
+      ${R(3, k => `<ellipse class="fat d-fatdrift" cx="60" cy="60" rx="9" ry="3.5" style="--fx:96px;animation-delay:${(-k * 1.6).toFixed(1)}s"/>`)}
+      ${R(3, k => `<ellipse class="fat d-bob2" cx="${176 + k * 14}" cy="59" rx="7" ry="3.5" style="animation-delay:${(k * .4).toFixed(1)}s"/>`)}
+      ${L(189, 108, "Fett-", "onwater dsmall", "middle")}${L(189, 124, "kammer", "onwater dsmall", "middle")}
+      <rect class="concrete" x="10" y="34" width="216" height="10" rx="2"/>
+      <line class="ink-line" x1="46" y1="44" x2="46" y2="232" style="stroke-width:3"/>
+      ${R(4, k => `<circle class="sand d-rise" cx="46" cy="228" r="2.5" style="--h:180px;animation-duration:2.2s;animation-delay:${(-k * 0.55).toFixed(2)}s"/>`)}
+      <rect x="196" y="44" width="6" height="24" style="fill:var(--accent);stroke:var(--ink);stroke-width:1.5"/>
+      <line class="ink-line" x1="40" y1="242" x2="40" y2="254" style="stroke-width:2"/>
+      ${L(40, 270, "Sandrinne", "dsmall", "middle")}
+      <line class="ink-line" x1="160" y1="182" x2="160" y2="276" style="stroke-width:2"/>
+      ${L(160, 292, "Leitwand", "dsmall", "middle")}
+      ${L(100, 316, "Luft nur auf einer Seite", "dsmall", "middle")}
+      <!-- Längsschnitt -->
+      <rect class="concrete" x="240" y="60" width="350" height="150" rx="4"/>
+      <rect class="w1" x="248" y="68" width="334" height="126"/>
+      <rect class="sand" x="248" y="182" width="334" height="12"/>
+      <rect class="concrete" x="556" y="68" width="26" height="30"/>
+      ${R(5, k => `<ellipse class="fat" cx="${520 + k * 7}" cy="${72 + (k % 2) * 2}" rx="8" ry="3.5"/>`)}
+      ${R(12, k => `<circle class="gbub d-rise" cx="${262 + k * 24}" cy="178" r="${2.5 + (k % 3)}" style="--h:${92 + (k % 3) * 6}px;animation-delay:${(-k * 0.23).toFixed(2)}s"/>`)}
+      <g class="d-slide" style="--dx:200px">
+        <rect class="concrete" x="252" y="46" width="80" height="12" rx="2"/>
+        <circle cx="260" cy="60" r="4" style="fill:var(--ink)"/><circle cx="324" cy="60" r="4" style="fill:var(--ink)"/>
+        <line class="ink-line" x1="272" y1="58" x2="272" y2="186" style="stroke-width:3"/>
+        ${R(3, k => `<circle class="sand d-rise" cx="272" cy="184" r="2.5" style="--h:120px;animation-duration:2s;animation-delay:${(-k * 0.66).toFixed(2)}s"/>`)}
+        <rect x="314" y="58" width="6" height="22" style="fill:var(--accent);stroke:var(--ink);stroke-width:1.5"/>
+      </g>
+      ${L(415, 150, "Luft von unten", "onwater dsmall", "middle")}
+      ${L(569, 116, "Fett-", "dsmall", "middle")}${L(569, 130, "schacht", "dsmall", "middle")}
+      ${L(415, 236, "Die Räumerbrücke fährt hin und her.", "dsmall", "middle")}
+      ${L(415, 258, "Ihre Pumpe saugt den Sand aus der Rinne.", "dsmall", "middle")}
+      ${L(415, 280, "Ihr Schild schiebt das Fett zum Schacht.", "dsmall", "middle")}`,
+    lead: "Im belüfteten Sand- und Fettfang sorgt eine Luftwalze dafür, dass schwere und leichte Stoffe getrennte Wege gehen.",
+    list: ["Die Luft kommt nur an einer Längsseite aus dem Boden. Darum dreht sich das Wasser wie eine Walze.",
+           "Sand fällt in die Sandrinne. Eine Pumpe an der Räumerbrücke saugt ihn ab.",
+           "Fett und Schwimmstoffe treibt die Walze durch die Leitwand in die ruhige Fettkammer. Ein Schild an der Brücke schiebt sie zum Fettschacht.",
+           "Der Sand wird gewaschen und kann zum Beispiel im Straßenbau wiederverwendet werden."],
+    num: "0,2 mm", numText: "So klein können Sandkörner sein, die hier noch herausgeholt werden." },
+
+  { title: "Das Vorklärbecken",
+    svg: `${ground(60)}
+      <path class="concrete" d="M20 84 H580 V276 H134 L108 322 H82 L56 276 H20 Z"/>
+      <path class="w2" d="M30 94 H570 V266 H128 L104 310 H86 L62 266 H30 Z"/>
+      <path class="sludge" d="M128 266 H570 V258 Q420 250 260 256 Q150 260 128 266 Z M62 266 H128 L104 310 H86 Z"/>
+      ${R(12, k => { const y = 120 + (k % 4) * 22; return `<circle class="sludge d-sink" cx="${160 + k * 34}" cy="${y}" r="${3 + (k % 2)}" style="--d:${252 - y}px;animation-delay:${(-k * 0.5).toFixed(1)}s"/>`; })}
+      <g class="d-scrape" style="--sx:-395px">
+        <rect class="concrete" x="520" y="68" width="50" height="12" rx="3"/>
+        <path class="ink-line" d="M545 80 V246" style="stroke-width:3"/>
+        <rect class="concrete" x="536" y="240" width="14" height="24" rx="2"/>
+      </g>
+      <circle cx="40" cy="28" r="19" style="fill:var(--surface);stroke:var(--ink);stroke-width:2.5"/>
+      <line class="ink-line d-spinv" x1="40" y1="28" x2="40" y2="15" style="transform-origin:40px 28px;stroke-width:2.5"/>
+      <line class="ink-line d-spinv d-spinslow" x1="40" y1="28" x2="49" y2="28" style="transform-origin:40px 28px;stroke-width:2.5"/>
+      ${L(68, 34, "Ruhe: etwa 1 bis 2 Stunden")}
+      ${L(40, 124, "Abwasser kommt rein →", "onwater")}
+      ${L(560, 124, "→ Wasser fließt weiter", "onwater", "end")}
+      ${L(320, 200, "Schmutz sinkt langsam ab", "onwater", "middle")}
+      ${L(140, 304, "Trichter: Primärschlamm")}`,
+    lead: "Im Vorklärbecken heißt es: still halten und warten. Der Schmutz sinkt ganz von allein nach unten.",
+    list: ["Das Wasser fließt hier so langsam, dass sich Schwebstoffe absetzen.",
+           "Ein Räumer schiebt den Schlamm am Boden in den Trichter. Oben schiebt er Schwimmschlamm zur Seite.",
+           "Der Schlamm heißt Primärschlamm. Er geht auf den Nebenweg zur Schlammbehandlung."],
+    num: "1–2 Std.", numText: "bleibt das Wasser ungefähr in diesem Becken." },
+
+  { title: "Biologie 1: Bio-P-Becken",
+    svg: `${ground(50)}
+      ${bioTank("w2")}
+      ${mixer(50, 230)}
+      <path class="d-flowline" d="M106 230 Q250 240 262 170 Q252 110 150 122 Q76 132 80 190"/>
+      ${L(160, 112, "Keine Luft, nur rühren", "onwater", "middle")}
+      ${L(20, 66, "Zulauf + Rücklaufschlamm →", "dsmall")}
+      ${lupe("lupeP", `
+        ${[[402,128],[492,112],[448,196],[520,214],[396,250]].map(([x, y], k) => `<circle class="sludge d-eat" cx="${x + 26}" cy="${y + 4}" r="6" style="animation-delay:${(-k * 0.7).toFixed(1)}s"/>`).join("")}
+        ${bact(402, 128, 15, 0)}${bact(492, 112, -20, -.4)}${bact(448, 196, 30, -.8)}${bact(520, 214, -25, -.2)}${bact(396, 250, 5, -.6)}
+        ${[[402,128,-30,-26],[492,112,24,-30],[448,196,-34,22],[520,214,28,26],[396,250,30,20]].map(([x, y, rx, ry], k) =>
+          `<g class="d-release" style="--rx:${rx}px;--ry:${ry}px;animation-delay:${(-k * 0.7).toFixed(1)}s">${tok(x, y, "tok-p", "P")}</g>`).join("")}`)}
+      ${L(395, 332, "Bakterien speichern Futter und geben Phosphat ab", "dsmall", "middle")}`,
+    lead: "Das erste Becken der Biologie ist anaerob: Es gibt weder Sauerstoff noch Nitrat.",
+    list: ["Rührwerke halten Wasser und Bakterien in Bewegung, damit nichts absinkt.",
+           "Spezielle Bakterien speichern hier Futter und geben dafür Phosphat ab.",
+           "Im belüfteten Becken nehmen sie danach mehr Phosphat auf, als sie abgegeben haben. Fachleute nennen das biologische Phosphorelimination, kurz Bio-P.",
+           "Was die Bakterien nicht schaffen, bindet ein Fällmittel aus Eisen- oder Aluminiumsalz."],
+    num: "bis zu 3-mal", numText: "so viel Phosphor wie normaler Belebtschlamm kann Bio-P-Schlamm speichern." },
+
+  { title: "Biologie 2: Deni-Becken",
+    svg: `${ground(50)}
+      ${bioTank("w3")}
+      ${mixer(50, 230)}
+      <path class="d-flowline" d="M106 230 Q250 240 262 170 Q252 110 150 122 Q76 132 80 190"/>
+      <path class="pipe thin" d="M330 30 H262 V100"/>
+      <path class="d-flow" style="stroke:var(--recirc)" d="M330 30 H262 V100"/>
+      ${L(326, 22, "Nitrat aus dem Nitri-Becken", "dsmall", "end")}
+      ${R(8, k => `<circle class="n2bub d-rise" cx="${110 + k * 18}" cy="${230 + (k % 3) * 10}" r="${3 + (k % 2)}" style="animation-name:rise2;--h:${140 + (k % 3) * 10}px;opacity:0;animation-delay:${(-k * 0.35).toFixed(2)}s"/>`)}
+      ${R(3, k => `<text class="dlabel dsmall d-up" x="${100 + k * 60}" y="80" style="animation-delay:${(-k * 1).toFixed(1)}s">N₂</text>`)}
+      ${L(160, 156, "Rühren ohne Luft", "onwater", "middle")}
+      ${lupe("lupeN", `
+        ${bact(410, 140, 15, 0)}${bact(500, 120, -20, -.4)}${bact(450, 210, 30, -.8)}${bact(520, 228, -25, -.2)}${bact(392, 250, 5, -.6)}
+        ${[[436,118],[526,100],[474,190],[548,208],[418,232]].map(([x, y], k) =>
+          `<g class="d-eat" style="animation-delay:${(-k * 0.8).toFixed(1)}s">${tok(x, y, "tok-n", "NO₃")}</g>`).join("")}
+        ${[[400,124],[490,104],[440,194],[510,212],[382,234]].map(([x, y], k) =>
+          `<circle class="n2bub" cx="${x}" cy="${y}" r="5" style="stroke:var(--ink);animation-name:rise2;--h:60px;animation-duration:2.6s;animation-delay:${(-k * 0.5).toFixed(1)}s"/>`).join("")}`)}
+      ${L(395, 332, "Bakterien atmen Nitrat und machen Stickstoffgas daraus", "dsmall", "middle")}`,
+    lead: "Im Deni-Becken wird aus Nitrat Stickstoffgas. Das Becken ist anoxisch: kein gelöster Sauerstoff, aber Nitrat.",
+    list: ["Das Nitrat kommt mit der internen Rezirkulation aus dem belüfteten Becken zurück.",
+           "Als Futter brauchen die Bakterien Kohlenstoff aus dem Abwasser. Darum liegt dieses Becken vor dem belüfteten Becken. Das nennt man vorgeschaltete Denitrifikation.",
+           "Das Stickstoffgas steigt in feinen Bläschen auf und entweicht in die Luft."],
+    num: "78 %", numText: "der Luft sind Stickstoff. Dorthin kehrt der Stickstoff aus dem Pipi zurück." },
+
+  { title: "Biologie 3: Nitri-Becken",
+    svg: `${ground(50)}
+      ${bioTank("w3")}
+      <rect class="house" x="26" y="6" width="58" height="36" rx="3"/>
+      <g class="d-spin" style="transform-origin:center"><path d="M55 14 L60 24 L55 34 L50 24 Z M45 24 L55 19 L65 24 L55 29 Z" style="fill:var(--ink)"/></g>
+      ${L(92, 30, "Gebläse", "dsmall")}
+      <path class="pipe thin" d="M55 42 V294 H280"/>
+      ${R(6, k => `<rect class="concrete" x="${70 + k * 36}" y="290" width="26" height="7" rx="3"/>`)}
+      ${R(18, k => `<circle class="gbub d-rise" cx="${74 + k * 11.5}" cy="286" r="${2.5 + (k % 3)}" style="--h:${170 + (k % 4) * 12}px;animation-delay:${(-((k * 7) % 18) * 0.16).toFixed(2)}s"/>`)}
+      <rect class="tower" x="196" y="4" width="38" height="34" rx="3"/>
+      ${L(242, 28, "Fällmittel", "dsmall")}
+      <line class="ink-line" x1="215" y1="38" x2="215" y2="54" style="stroke-width:3"/>
+      ${R(3, k => `<circle class="w5 d-drip" cx="215" cy="58" r="3" style="animation-duration:1.5s;animation-delay:${(-k * 0.5).toFixed(1)}s"/>`)}
+      ${L(160, 120, "Luft von unten", "onwater", "middle")}
+      ${lupe("lupeA", `
+        ${[[430,110],[516,150],[400,212],[490,262]].map(([x, y], k) => `<circle class="sludge d-eat" cx="${x}" cy="${y}" r="6" style="animation-delay:${(-k * 0.9).toFixed(1)}s"/>`).join("")}
+        ${bact(404, 140, 15, 0)}${bact(494, 118, -20, -.4)}${bact(452, 200, 30, -.8)}${bact(524, 226, -25, -.2)}${bact(388, 250, 5, -.6)}
+        ${[[432,168],[528,184],[480,236],[418,280],[540,120]].map(([x, y], k) =>
+          `<g class="d-swapA" style="animation-delay:${(-k * 0.9).toFixed(1)}s">${tok(x, y, "tok-a", "NH₄", true)}</g><g class="d-swapB" style="animation-delay:${(-k * 0.9).toFixed(1)}s">${tok(x, y, "tok-n", "NO₃")}</g>`).join("")}
+        ${R(10, k => `<circle class="gbub d-rise" cx="${360 + k * 20}" cy="296" r="3" style="--h:230px;animation-duration:3.4s;animation-delay:${(-k * 0.34).toFixed(2)}s"/>`)}`)}
+      ${L(395, 332, "Aus Ammonium wird Nitrat, und Schmutz wird gefressen", "dsmall", "middle")}`,
+    lead: "Im Nitri-Becken wird belüftet. Hier wird das meiste Futter abgebaut, und aus Ammonium wird Nitrat.",
+    list: ["Gebläse drücken Luft durch Belüfter am Boden. Je feiner die Blasen, desto mehr Sauerstoff löst sich im Wasser.",
+           "Nitrifikanten sind langsam wachsende Bakterien. Sie wandeln Ammonium erst in Nitrit und dann in Nitrat um.",
+           "Ein Teil des Wassers fließt mit dem Nitrat zurück ins Deni-Becken.",
+           "Oft wird hier ein Fällmittel zugegeben, das restliches Phosphat bindet."],
+    num: "ca. 2 mg/l", numText: "Sauerstoff halten Messgeräte hier im Wasser. Mehr wäre Stromverschwendung." },
+
+  { title: "Das Nachklärbecken",
+    svg: `${ground(60)}
+      <path class="concrete" d="M20 84 H500 V244 L282 296 H238 L20 244 Z"/>
+      <path class="w4" d="M30 94 H490 V238 L280 286 H240 L30 238 Z"/>
+      <path class="sludge" d="M150 262 Q260 240 370 262 L280 286 H240 Z"/>
+      ${[0,1,2,3,6,7,8,9].map(k => { const x = 70 + k * 42, y = 124 + (k % 3) * 18; return `<g class="d-sink" style="--d:${118 - (k % 3) * 18}px;animation-delay:${(-k * 0.6).toFixed(1)}s"><g class="sludge"><circle cx="${x}" cy="${y}" r="3.5"/><circle cx="${x + 5}" cy="${y + 3}" r="3"/><circle cx="${x - 3}" cy="${y + 5}" r="2.5"/></g></g>`; }).join("")}
+      <rect x="230" y="94" width="60" height="84" style="fill:none;stroke:var(--ink);stroke-width:3"/>
+      <path class="d-flowline" d="M260 100 V170"/>
+      <path class="d-flowline" d="M292 172 Q390 150 482 112"/>
+      <path class="d-flowline" d="M228 172 Q130 150 38 112"/>
+      ${L(260, 78, "Zulauf in der Mitte", "dsmall", "middle")}
+      <rect class="concrete" x="500" y="84" width="84" height="36" rx="3"/>
+      <rect class="w5" x="506" y="98" width="78" height="14"/>
+      <path class="d-flowline" d="M508 105 H584"/>
+      ${L(486, 136, "klares Wasser →", "onwater", "end")}
+      ${L(542, 142, "Ablaufrinne", "dsmall", "middle")}
+      ${L(60, 214, "Flocken sinken ab", "onwater")}
+      <path class="pipe thin" d="M252 296 V312 H6"/>
+      <path class="d-flow" style="stroke:var(--sludge)" d="M252 296 V312 H6"/>
+      <path class="pipe thin" d="M268 296 V312 H594"/>
+      <path class="d-flow" style="stroke:var(--sludge)" d="M268 296 V312 H594"/>
+      ${L(10, 334, "← Rücklaufschlamm zur Biologie", "dsmall")}
+      ${L(590, 334, "Überschussschlamm zur Schlammbehandlung →", "dsmall", "end")}`,
+    lead: "Im Nachklärbecken trennt sich der Belebtschlamm vom gereinigten Wasser.",
+    list: ["Das Wasser kommt in der Mitte durch das Einlaufbauwerk und fließt langsam nach außen.",
+           "Die Flocken sinken ab. Ein Räumer schiebt sie zum Trichter in der Mitte.",
+           "Der meiste Schlamm geht als Rücklaufschlamm zurück in die Biologie. Was zu viel ist, geht als Überschussschlamm zur Schlammbehandlung.",
+           "Am Rand läuft das klare Wasser über eine Kante in die Ablaufrinne."],
+    num: "über 90 %", numText: "des Schmutzes sind jetzt aus dem Wasser heraus." },
+
+  { title: "Der Fluss",
+    svg: `<rect class="sky" width="600" height="240"/>
+      <g class="d-spinv d-spinslow" style="transform-origin:80px 60px">${R(8, k => { const a = k * Math.PI / 4; return `<line class="sunray" x1="${(80 + Math.cos(a) * 34).toFixed(1)}" y1="${(60 + Math.sin(a) * 34).toFixed(1)}" x2="${(80 + Math.cos(a) * 46).toFixed(1)}" y2="${(60 + Math.sin(a) * 46).toFixed(1)}"/>`; })}</g>
+      <circle class="sun" cx="80" cy="60" r="26"/>
+      ${R(7, k => `<line class="rainline d-rain" x1="${432 + k * 14}" y1="88" x2="${429 + k * 14}" y2="98" style="--d:${80 + (k % 3) * 8}px;animation-delay:${(-k * 0.13).toFixed(2)}s"/>`)}
+      <g class="d-bob2"><g class="cloud"><ellipse cx="470" cy="66" rx="58" ry="20"/><ellipse cx="500" cy="50" rx="34" ry="22"/><ellipse cx="440" cy="54" rx="26" ry="16"/></g></g>
+      <path class="grass" d="M300 238 Q380 150 470 206 Q530 168 600 194 V240 H300 Z"/>
+      <rect class="earth" y="236" width="600" height="104"/>
+      <path class="w5" d="M0 262 Q150 246 300 262 T600 258 V340 H0 Z"/>
+      ${R(3, k => `<path class="evap d-up" d="M${190 + k * 50} 250 q-8 -14 0 -28 q8 -14 0 -28" style="animation-delay:${(-k * 1).toFixed(1)}s"/>`)}
+      <rect class="concrete" x="0" y="214" width="58" height="20" rx="3"/>
+      <path class="d-flow" style="stroke:var(--w5);stroke-width:6" d="M58 224 Q72 228 76 262"/>
+      <g class="d-swim">${fish(560, 300)}</g>
+      <g class="d-swim" style="animation-delay:-4.5s">${fish(560, 322)}</g>
+      ${L(250, 128, "Wasser verdunstet", "", "middle")}
+      ${L(404, 40, "Wolke", "", "end")}
+      ${L(540, 120, "Regen")}
+      ${L(12, 204, "gereinigtes Wasser")}
+      ${L(300, 296, "Fluss", "onwater", "middle")}`,
+    lead: "Das gereinigte Wasser kehrt in die Natur zurück, und der Wasserkreislauf geht immer weiter.",
+    list: ["Im Ablauf wird ständig gemessen. Das Wasser muss strenge Grenzwerte einhalten.",
+           "Medikamentenreste schafft die Biologie nicht ganz. Nach neuen EU-Regeln bekommen große Kläranlagen dafür bis 2045 eine vierte Reinigungsstufe, zum Beispiel mit Aktivkohle oder Ozon.",
+           "Wasser geht nie verloren. Es wandert im Kreis: Fluss, Meer, Wolke, Regen."],
+    num: "3 %", numText: "des Wassers auf der Erde ist Süßwasser. Der Rest ist salziges Meerwasser." },
+
+  { title: "Die Schlammbehandlung",
+    svg: `<rect class="sky" width="600" height="290"/>
+      <rect class="grass" y="282" width="600" height="8"/><rect class="earth" y="290" width="600" height="50"/>
+      ${L(8, 172, "Schlamm aus Vor-", "dsmall")}${L(8, 188, "und Nachklärung", "dsmall")}
+      <path class="d-flow" style="stroke:var(--sludge);stroke-width:5" d="M55 194 V208"/>
+      <rect class="tower" x="20" y="214" width="70" height="68" rx="3"/><ellipse class="tower" cx="55" cy="214" rx="35" ry="7"/>
+      ${L(55, 256, "Eindicker", "dsmall", "middle")}
+      <path class="d-flow" style="stroke:var(--sludge);stroke-width:5" d="M90 250 H142"/>
+      ${L(20, 60, "Faulbehälter")}
+      <path class="pipe thin" d="M190 40 V22 H316 V230"/>
+      <path class="d-flow" style="stroke:var(--accent)" d="M190 40 V22 H316 V230"/>
+      ${L(255, 14, "Biogas", "dsmall", "middle")}
+      <path class="tower" d="M190 40 C232 40 252 140 252 196 C252 250 226 282 190 282 C154 282 128 250 128 196 C128 140 148 40 190 40 Z"/>
+      <clipPath id="eggclip"><path d="M190 52 C226 52 240 140 240 196 C240 244 220 270 190 270 C160 270 140 244 140 196 C140 140 154 52 190 52 Z"/></clipPath>
+      <g clip-path="url(#eggclip)">
+        <rect x="120" y="40" width="140" height="240" style="fill:var(--surface)"/>
+        <path class="sludge" d="M120 124 Q155 114 190 124 T260 124 V290 H120 Z"/>
+        ${R(9, k => `<circle class="gasbub d-rise" cx="${152 + k * 9}" cy="${240 + (k % 3) * 10}" r="3.5" style="--h:${120 + (k % 3) * 10}px;animation-delay:${(-k * 0.33).toFixed(2)}s"/>`)}
+      </g>
+      <line class="ink-line" x1="190" y1="40" x2="190" y2="232" style="stroke-width:4"/>
+      <ellipse class="concrete d-prop" cx="190" cy="232" rx="30" ry="6"/>
+      <path class="tower" d="M300 282 V250 Q340 190 380 250 V282 Z"/>
+      ${L(352, 204, "Gasspeicher", "dsmall")}
+      <path class="d-flow" style="stroke:var(--accent)" d="M380 262 H400"/>
+      <rect class="concrete" x="456" y="206" width="12" height="30"/>
+      ${R(3, k => `<circle class="cloud d-up" cx="462" cy="200" r="${6 + k}" style="animation-delay:${(-k * 1).toFixed(1)}s"/>`)}
+      <rect class="house" x="400" y="236" width="80" height="46"/>
+      ${L(440, 265, "BHKW", "", "middle")}
+      <path class="d-flow" style="stroke:var(--accent);stroke-width:3" d="M480 248 H500 V96"/>
+      <circle class="d-halo" cx="500" cy="74" r="30" style="fill:var(--accent)"/>
+      <circle class="d-glow" cx="500" cy="74" r="16" style="fill:var(--accent);stroke:var(--ink);stroke-width:2.5"/>
+      <rect class="concrete" x="493" y="90" width="14" height="8"/>
+      ${L(500, 30, "Strom", "", "middle")}
+      <rect class="concrete" x="512" y="200" width="80" height="32" rx="6"/>
+      <path d="M520 216 H584" style="fill:none;stroke:var(--ink);stroke-width:8;stroke-dasharray:3 7;animation:flow .5s linear infinite"/>
+      ${L(552, 190, "Entwässerung", "dsmall", "middle")}
+      ${R(3, k => `<rect class="sludge d-fall" x="${540 + k * 10}" y="234" width="6" height="5" rx="2" style="--d:16px;animation-duration:1.4s;animation-delay:${(-k * 0.45).toFixed(2)}s"/>`)}
+      <path class="concrete" d="M516 282 L512 248 H592 L588 282 Z"/>
+      <path class="sludge" d="M518 252 Q552 238 586 252 Z"/>
+      ${L(552, 272, "Container", "dsmall", "middle")}
+      <path class="d-flow" style="stroke:var(--bad)" d="M440 282 V304 H214 V278"/>
+      ${L(330, 300, "← Wärme", "dsmall", "middle")}
+      <path class="d-flow" style="stroke:var(--sludge);stroke-width:5" d="M190 282 V326 H598 V216 H592"/>
+      ${L(390, 322, "Faulschlamm →", "dsmall", "middle")}`,
+    lead: "Die Schlammbehandlung ist ein Nebenweg. Das Wasser fließt hier nicht mit, aber aus dem Schlamm wird Energie.",
+    list: ["Im Eindicker setzt sich der Schlamm weiter ab. Das abgetrennte Wasser fließt zurück an den Anfang der Kläranlage.",
+           "Im Faulbehälter bleibt der Schlamm etwa drei Wochen bei rund 37 °C. Ein Rührwerk mischt ihn gut durch.",
+           "Faulgas besteht zu ungefähr zwei Dritteln aus Methan. Im Blockheizkraftwerk (BHKW) wird daraus Strom und Wärme.",
+           "Eine Zentrifuge schleudert Wasser aus dem ausgefaulten Schlamm. Danach wird er meist verbrannt.",
+           "Ab 2029 müssen große Kläranlagen Phosphor aus dem Klärschlamm zurückgewinnen, zum Beispiel aus der Asche."],
+    num: "37 °C", numText: "So warm ist es im Faulbehälter. Genauso warm wie in deinem Körper." }
+];
+
+const det = $("detail");
+let lastFocus = null;
+function openDetail(i) {
+  if (det.hidden) lastFocus = document.activeElement;
+  go(i);
+  const d = details[cur], s = stations[cur];
+  $("dEyebrow").textContent = "Nahaufnahme · " + eyebrowFor(s, cur);
+  $("dTitle").textContent = d.title;
+  $("dSvg").innerHTML = d.svg;
+  $("dLead").textContent = d.lead;
+  $("dList").innerHTML = d.list.map(t => `<li>${t}</li>`).join("");
+  $("dNum").textContent = d.num;
+  $("dNumText").textContent = d.numText;
+  $("dPrev").disabled = cur === 0;
+  $("dNext").textContent = cur === MAIN - 1 ? "Zum Nebenweg: Schlamm →" : cur === stations.length - 1 ? "Fertig" : "Nächste Station →";
+  if (det.hidden) {
+    det.hidden = false;
+    document.body.style.overflow = "hidden";
+    $("dClose").focus();
+  }
+  det.scrollTop = 0;
+}
+function closeDetail() {
+  det.hidden = true;
+  $("dSvg").innerHTML = "";
+  document.body.style.overflow = "";
+  if (lastFocus && lastFocus.focus) lastFocus.focus();
+}
+$("zoomBtn").addEventListener("click", () => openDetail(cur));
+$("dClose").addEventListener("click", closeDetail);
+$("dPrev").addEventListener("click", () => openDetail(cur - 1));
+$("dNext").addEventListener("click", () => cur === stations.length - 1 ? closeDetail() : openDetail(cur + 1));
+det.addEventListener("click", e => { if (e.target === det) closeDetail(); });
+document.addEventListener("keydown", e => {
+  if (det.hidden) return;
+  if (e.key === "Escape") closeDetail();
+  if (e.key === "ArrowRight" && cur < stations.length - 1) openDetail(cur + 1);
+  if (e.key === "ArrowLeft" && cur > 0) openDetail(cur - 1);
+});
+
+go(0);
+renderGame();
+</script>
+</body>
+</html>
