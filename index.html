@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <style>
-/* Layout: Bilderbuch-Querschnitt (oben Nebenweg Schlamm, unten Wasserweg), darunter Erzählkarte, Nahaufnahmen als Dialog, unten Klo-Check */
+/* Layout: Bilderbuch-Querschnitt (oben Nebenweg Schlamm, unten Wasserweg), darunter Erzählkarte, Nahaufnahmen als Dialog, unten Wissensquiz */
 :root {
   --bg: #eaf4f6; --surface: #ffffff; --ink: #163543; --muted: #4a6976; --line: #c4dbe2;
   --sky: #d9eff6; --cloud: #ffffff; --earth: #cdb48c; --earth-dark: #a98d64; --grass: #79b067; --road: #e4e9e5; --sand: #e8cf92;
@@ -123,22 +123,31 @@ h1 span { color: var(--w5); }
 .btn:disabled { opacity: .4; cursor: default; }
 .btn:focus-visible, .steps button:focus-visible, .choice:focus-visible { outline: 3px solid var(--w5); outline-offset: 2px; }
 
-.game { display: grid; gap: 14px; }
-.game header { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; }
-.game h2 { font-size: clamp(24px, 3.6vw, 32px); }
-.game header p { margin: 4px 0 0; color: var(--muted); }
+.terms { border: 2px solid var(--line); border-radius: 16px; padding: 12px 16px; }
+.terms h3 { font-size: 18px; }
+.terms dl { margin: 8px 0 0; display: grid; gap: 8px; }
+.terms dt { font: 600 15.5px/1.2 var(--display); }
+.terms dd { margin: 2px 0 0; font-size: 15px; color: var(--muted); }
+
+.quiz { display: grid; gap: 14px; }
+.quiz header { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; }
+.quiz h2 { font-size: clamp(24px, 3.6vw, 32px); }
+.quiz header p { margin: 4px 0 0; color: var(--muted); }
 .score { font: 700 18px var(--display); background: var(--surface); border: 2px solid var(--ink); border-radius: 999px; padding: 6px 16px; font-variant-numeric: tabular-nums; }
-.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
-.item { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 14px; display: grid; gap: 10px; align-content: start; }
-.item h3 { font-size: 19px; }
-.choices { display: flex; gap: 8px; }
-.choice { flex: 1; font: 600 15px/1.1 var(--display); padding: 10px 8px; border-radius: 12px; border: 2px solid var(--ink); background: var(--bg); color: var(--ink); cursor: pointer; }
-.choice:disabled { cursor: default; opacity: .55; }
-.choice.picked { opacity: 1; background: var(--ink); color: var(--surface); }
-.item .res { margin: 0; font-size: 15px; }
-.item.ok { border-color: var(--good); } .item.ok .res b { color: var(--good); }
-.item.no { border-color: var(--bad); } .item.no .res b { color: var(--bad); }
-.reset { justify-self: start; }
+.qcard { background: var(--surface); border: 3px solid var(--ink); border-radius: 22px; padding: 22px; display: grid; gap: 14px; }
+.qcard .bar { margin-top: 0; }
+.qq { font-size: clamp(20px, 2.8vw, 24px); }
+.qopts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.qopt { text-align: left; font: 600 16px/1.3 var(--display); padding: 14px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+.qopt:hover:not(:disabled) { border-color: var(--ink); }
+.qopt:disabled { cursor: default; }
+.qopt.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 18%, var(--surface)); }
+.qopt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, var(--surface)); }
+.qopt.dim { opacity: .55; }
+.qopt:focus-visible { outline: 3px solid var(--w5); outline-offset: 2px; }
+.qexp { margin: 0; max-width: 70ch; }
+.qexp b.ok { color: var(--good); } .qexp b.no { color: var(--bad); }
+.qnav { display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; }
 
 /* Detailansicht */
 .detail { position: fixed; inset: 0; z-index: 50; background: color-mix(in srgb, #08161c 62%, transparent); display: flex; justify-content: center; align-items: flex-start; overflow-y: auto;
@@ -282,7 +291,7 @@ h1 span { color: var(--w5); }
 <div class="wrap">
   <header>
     <h1>Tropfis Reise durch die <span>Kläranlage</span></h1>
-    <p class="lead">Unten fließt das Wasser von Station 1 bis 9. Oben liegt der Nebenweg, auf dem der Schlamm behandelt wird. Tippe auf eine Station, dann siehst du sie in einer bewegten Nahaufnahme. Mit „Weiter“ gehst du Schritt für Schritt.</p>
+    <p class="lead">Verfolge den Abwassertropfen Tropfi durch eine Kläranlage. Unten verläuft der Wasserweg mit neun Stationen, oben der Nebenweg der Schlammbehandlung. Klicke auf eine Station, um sie in einer animierten Nahaufnahme mit mehr Details zu sehen. Am Ende kannst du dein Wissen im Quiz testen.</p>
   </header>
 
   <div class="stage">
@@ -312,7 +321,7 @@ h1 span { color: var(--w5); }
         <path class="gaspipe" d="M730 186 H755"/>
         <rect class="signbox" x="408" y="14" width="236" height="26" rx="13"/>
         <g class="badge"><circle cx="424" cy="27" r="12"/><text x="424" y="28">S</text></g>
-        <text class="svgtext" x="540" y="32" text-anchor="middle">Nebenweg: Schlamm</text>
+        <text class="svgtext" x="540" y="32" text-anchor="middle">Nebenweg: Schlammbehandlung</text>
         <rect class="tower" x="412" y="150" width="70" height="46" rx="3"/><ellipse class="tower" cx="447" cy="150" rx="35" ry="6"/>
         <text class="tiny" x="447" y="138" text-anchor="middle">Eindicker</text>
         <path class="tower" d="M560 60 C590 60 604 120 604 150 C604 180 588 196 560 196 C532 196 516 180 516 150 C516 120 530 60 560 60 Z"/>
@@ -330,7 +339,7 @@ h1 span { color: var(--w5); }
       </g>
 
       <!-- 1 Zuhause -->
-      <g class="st" data-i="0" tabindex="0" role="button" aria-label="Station 1: Zuhause">
+      <g class="st" data-i="0" tabindex="0" role="button" aria-label="Station 1: Haushalt und Kanal">
         <rect class="hit" x="8" y="170" width="114" height="360"/>
         <rect class="house" x="22" y="210" width="60" height="52"/>
         <path class="roof" d="M16 212 L52 178 L88 212 Z"/>
@@ -381,7 +390,7 @@ h1 span { color: var(--w5); }
       <rect class="concrete" x="440" y="272" width="272" height="80" rx="3"/>
 
       <!-- 5 Bio-P -->
-      <g class="st" data-i="4" tabindex="0" role="button" aria-label="Station 5: Bio-P-Becken">
+      <g class="st" data-i="4" tabindex="0" role="button" aria-label="Station 5: Anaerobbecken">
         <rect class="hit" x="438" y="262" width="82" height="268"/>
         <rect class="w2" x="446" y="280" width="72" height="66"/>
         <rect class="concrete" x="454" y="318" width="20" height="9" rx="4"/>
@@ -390,7 +399,7 @@ h1 span { color: var(--w5); }
       </g>
 
       <!-- 6 Deni -->
-      <g class="st" data-i="5" tabindex="0" role="button" aria-label="Station 6: Deni-Becken">
+      <g class="st" data-i="5" tabindex="0" role="button" aria-label="Station 6: Denitrifikation">
         <rect class="hit" x="520" y="262" width="88" height="268"/>
         <rect class="w3" x="524" y="280" width="82" height="66"/>
         <rect class="concrete" x="532" y="318" width="20" height="9" rx="4"/>
@@ -400,7 +409,7 @@ h1 span { color: var(--w5); }
       </g>
 
       <!-- 7 Nitri -->
-      <g class="st" data-i="6" tabindex="0" role="button" aria-label="Station 7: Nitri-Becken">
+      <g class="st" data-i="6" tabindex="0" role="button" aria-label="Station 7: Nitrifikation">
         <rect class="hit" x="608" y="262" width="106" height="268"/>
         <rect class="w3" x="612" y="280" width="94" height="66"/>
         <line class="ink-line" x1="618" y1="342" x2="700" y2="342" style="stroke-width:2.5"/>
@@ -421,7 +430,7 @@ h1 span { color: var(--w5); }
       </g>
 
       <!-- 9 Fluss -->
-      <g class="st" data-i="8" tabindex="0" role="button" aria-label="Station 9: Fluss">
+      <g class="st" data-i="8" tabindex="0" role="button" aria-label="Station 9: Gewässer">
         <rect class="hit" x="836" y="262" width="162" height="276"/>
         <path class="w5" d="M842 540 V322 Q870 306 910 316 T1000 308 V540 Z"/>
         <line class="reed" x1="852" y1="314" x2="848" y2="278"/><line class="reed" x1="862" y1="314" x2="866" y2="270"/>
@@ -452,9 +461,10 @@ h1 span { color: var(--w5); }
       <p class="body" id="text"></p>
     </div>
     <div class="side-col">
+      <div class="terms"><h3>Fachbegriffe</h3><dl id="terms"></dl></div>
       <div class="fact"><h3>Wusstest du?</h3><p id="fact"></p></div>
       <div class="meter">
-        <div class="row"><span>Wie sauber ist Tropfi?</span><strong id="cleanLabel"></strong></div>
+        <div class="row"><span>Reinigungsfortschritt</span><strong id="cleanLabel"></strong></div>
         <div class="bar"><i id="cleanBar"></i></div>
       </div>
     </div>
@@ -465,16 +475,15 @@ h1 span { color: var(--w5); }
     </div>
   </section>
 
-  <section class="game" id="game">
+  <section class="quiz" id="quiz">
     <header>
       <div>
-        <h2>Klo-Check: Was darf ins Klo?</h2>
-        <p>Entscheide bei jedem Ding: Klo oder Mülleimer?</p>
+        <h2>Quiz: Wie gut kennst du die Kläranlage?</h2>
+        <p>13 Fragen zu allen Stationen. Wähle jeweils eine Antwort.</p>
       </div>
-      <div class="score" id="score">0 von 9 richtig</div>
+      <div class="score" id="qScore">0 richtig</div>
     </header>
-    <div class="items" id="items"></div>
-    <button class="btn reset" id="reset" type="button">Nochmal spielen</button>
+    <div class="qcard" id="qCard" aria-live="polite"></div>
   </section>
 </div>
 
@@ -501,36 +510,58 @@ h1 span { color: var(--w5); }
 
 <script>
 const stations = [
-  { short: "Zuhause", badge: "1", title: "Ab ins Rohr!", pos: [65, 150], pct: 6, lbl: "Igitt, total dreckig", col: "--w0",
-    text: "Hallo, ich bin Tropfi! Gerade wurde ich in einem Haus die Toilette hinuntergespült. Zusammen mit dem Wasser aus Dusche, Waschmaschine und Spüle fließe ich durch dicke Rohre unter der Straße. Diese Rohre heißen Kanal. Am Ende wartet die Kläranlage auf mich.",
-    fact: "Jeder Mensch in Deutschland braucht ungefähr 125 Liter Wasser am Tag. Das ist fast eine ganze Badewanne voll." },
-  { short: "Rechen", badge: "2", title: "Der Rechen", pos: [165, 228], pct: 16, lbl: "Grobes ist raus", col: "--w0",
-    text: "Zuerst komme ich an ein Gitter mit ganz engen Stäben. Es hält den Abfall fest, der nicht ins Klo gehört: Feuchttücher, Wattestäbchen, Plastik und manchmal sogar Spielzeug. Klopapier und Kacka sind unterwegs schon zerfallen und schwimmen durch. Der Rechen hebt den Abfall aus dem Wasser. Danach wird er gewaschen, ausgepresst und verbrannt.",
-    fact: "Feuchttücher zerfallen nicht wie Klopapier. Sie wickeln sich um die Pumpen und legen sie lahm." },
-  { short: "Sand- & Fettfang", badge: "3", title: "Der Sand- und Fettfang", pos: [265, 228], pct: 26, lbl: "Sand und Fett sind raus", col: "--w1",
-    text: "Jetzt komme ich in ein breites Becken. Hier fließe ich nur noch etwa 20 Zentimeter pro Sekunde. Schwere Sachen wie Sand, Kies, Steinchen und Glassplitter sinken auf den Boden. Von einer Seite wird Luft eingeblasen, deshalb dreht sich das Wasser wie eine Walze. Fett schwimmt nach oben und wird abgeschöpft. Leichte Schmutzflocken bleiben in der Schwebe und fließen mit mir weiter.",
-    fact: "Sand würde die Pumpen abschleifen wie Schmirgelpapier. Darum muss er ganz früh raus." },
-  { short: "Vorklärung", badge: "4", title: "Das Vorklärbecken", pos: [375, 228], pct: 38, lbl: "Noch trüb", col: "--w2",
-    text: "Hier fließe ich ganz langsam. Schwere Schmutzteilchen sinken nach unten und werden zu Schlamm. Ein Räumer schiebt den Schlamm in einen Trichter. Von dort nimmt er einen eigenen Weg: zur Schlammbehandlung.",
-    fact: "Nach diesem Becken ist schon etwa ein Drittel des Schmutzes weg. Ganz ohne Chemie, nur durch Warten." },
-  { short: "Bio-P", badge: "5", bio: true, title: "Biologie 1: Das Becken ohne Luft", pos: [479, 228], pct: 44, lbl: "Noch trüb", col: "--w2",
-    text: "Jetzt beginnt die Biologie, und hier treffe ich Milliarden Bakterien. Sie kommen als Rücklaufschlamm aus dem Nachklärbecken zurück. In diesem Becken wird nur gerührt, Luft gibt es keine. Einige Bakterien fressen sich trotzdem voll und geben dabei Phosphor ab. Das klingt komisch, ist aber ein Trick: Später nehmen sie umso mehr davon wieder auf.",
-    fact: "Phosphor ist ein Dünger. Kommt zu viel davon in den Fluss, wachsen dort so viele Algen, dass den Fischen die Luft knapp wird." },
-  { short: "Deni", badge: "6", bio: true, title: "Biologie 2: Die Denitrifikation", pos: [564, 228], pct: 60, lbl: "Viel besser", col: "--w3",
-    text: "Auch hier wird nur gerührt. Aus dem nächsten Becken wird Wasser mit Nitrat zurückgepumpt. Die Bakterien hier haben einen Trick: Wenn keine Luft da ist, holen sie sich den Sauerstoff einfach aus dem Nitrat. Übrig bleibt Stickstoffgas, das nach oben in die Luft blubbert.",
-    fact: "Die Luft, die du atmest, besteht zu 78 Prozent aus Stickstoff. Das Gas aus diesem Becken ist also völlig harmlos." },
-  { short: "Nitri", badge: "7", bio: true, title: "Biologie 3: Das belüftete Becken", pos: [660, 228], pct: 80, lbl: "Fast sauber", col: "--w3",
-    text: "Hier blubbert es überall! Von unten wird Luft hineingeblasen. Die Bakterien atmen den Sauerstoff und fressen den restlichen Schmutz. Besondere Bakterien verwandeln das Ammonium aus dem Pipi in Nitrat. Ein Teil des Wassers wird deshalb zurück ins Deni-Becken gepumpt. Und die Bakterien aus dem ersten Becken nehmen jetzt viel Phosphor auf.",
-    fact: "Die Gebläse für die Luft brauchen ungefähr die Hälfte des ganzen Stroms der Kläranlage." },
-  { short: "Nachklärung", badge: "8", title: "Das Nachklärbecken", pos: [774, 228], pct: 94, lbl: "Klar!", col: "--w4",
-    text: "Die Bakterien kleben zu Flocken zusammen und sinken nach unten. Die meisten wandern als Rücklaufschlamm zurück an den Anfang der Biologie. Weil sie sich vermehren, sind es aber immer zu viele. Der Rest heißt Überschussschlamm und geht zur Schlammbehandlung. Oben läuft klares Wasser ab. Das bin ich!",
-    fact: "Jetzt sieht das Wasser fast so aus wie aus dem Wasserhahn. Trinken darf man es aber trotzdem nicht." },
-  { short: "Fluss", badge: "9", title: "Geschafft!", pos: [925, 360], pct: 100, lbl: "Blitzsauber!", col: "--w5",
-    text: "Sauber fließe ich in den Fluss, und die Fische freuen sich. Ich reise weiter, vielleicht sogar bis ins Meer. Irgendwann verdunste ich in der Sonne, werde zu einer Wolke und regne wieder herunter. Dann beginnt der Wasserkreislauf von vorn.",
-    fact: "Du kannst der Kläranlage helfen: Ins Klo gehören nur Pipi, Kacka und Klopapier. Probier unten den Klo-Check aus!" },
-  { short: "Schlamm", badge: "S", side: true, title: "Nebenweg: Die Schlammbehandlung", pos: [560, 228], pct: 100, lbl: "Tropfi schaut nur zu", col: "--w5",
-    text: "Ich bin fertig, aber was passiert mit dem ganzen Schlamm aus Vor- und Nachklärung? Er nimmt einen eigenen Weg. Zuerst wird er eingedickt. Dann bleibt er etwa drei Wochen im eiförmigen Faulbehälter. Dort ist es warm, dunkel und ohne Luft. Bakterien machen aus dem Schlamm Biogas, und ein kleines Kraftwerk macht daraus Strom und Wärme.",
-    fact: "Im Faulbehälter ist es etwa 37 Grad warm, also so warm wie in deinem Bauch. Die Wärme dafür kommt aus dem eigenen Kraftwerk." }
+  { short: "Haushalt & Kanal", badge: "1", title: "Start im Haushalt", pos: [65, 150], pct: 6, lbl: "Rohabwasser", col: "--w0",
+    text: "Ich bin Tropfi, ein Tropfen Abwasser. Eben bin ich aus einer Toilette gespült worden. Zusammen mit dem Wasser aus Dusche, Waschmaschine und Spüle fließe ich durch die Kanalisation zur Kläranlage. Ich bin ein Gemisch aus Wasser, Fäkalien, Urin, Toilettenpapier, Essensresten, Waschmittel und allem, was sonst noch im Abfluss landet.",
+    fact: "Jeder Mensch in Deutschland verbraucht ungefähr 125 Liter Wasser am Tag. Fast alles davon wird zu Abwasser.",
+    terms: [["Kanalisation", "Das Netz aus Rohren und Kanälen unter der Straße, das Abwasser zur Kläranlage leitet."],
+            ["Mischsystem", "Schmutz- und Regenwasser fließen im selben Kanal. Im Trennsystem gibt es zwei getrennte Kanäle."]] },
+  { short: "Rechen", badge: "2", title: "Mechanische Reinigung: Rechen", pos: [165, 228], pct: 16, lbl: "Grobstoffe entfernt", col: "--w0",
+    text: "Die erste Station ist ein Gitter aus Metallstäben, der Rechen. Er hält fest, was nicht ins Abwasser gehört: Feuchttücher, Wattestäbchen, Plastik und manchmal sogar Spielzeug. Toilettenpapier und Fäkalien sind unterwegs schon zerfallen und passen durch. Eine Räumharke hebt den Abfall heraus. Danach wird er gewaschen, gepresst und verbrannt.",
+    fact: "Feuchttücher zerfallen nicht wie Toilettenpapier. Sie wickeln sich um Pumpen und legen sie lahm.",
+    terms: [["Rechengut", "Alles, was der Rechen aus dem Abwasser holt."],
+            ["Mechanische Reinigung", "Die ersten Stufen, in denen Stoffe nur durch Sieben, Absetzen oder Aufschwimmen entfernt werden."]] },
+  { short: "Sand- & Fettfang", badge: "3", title: "Mechanische Reinigung: Sand- und Fettfang", pos: [265, 228], pct: 26, lbl: "Sand und Fett entfernt", col: "--w1",
+    text: "Das Becken ist so breit, dass ich nur noch mit etwa 0,2 Metern pro Sekunde fließe. Schwere mineralische Teilchen wie Sand, Kies und Glassplitter sinken dabei zu Boden. Von einer Seite wird Luft eingeblasen, sodass sich das Wasser wie eine Walze dreht. Die Walze hält organische Schwebstoffe in der Schwebe, damit sie mit mir weiterfließen. Fette und Öle steigen auf und werden abgeschöpft.",
+    fact: "Sand würde Pumpen und Rohre abschleifen wie Schmirgelpapier. Deshalb muss er so früh wie möglich heraus.",
+    terms: [["Sedimentation", "Das Absinken von Teilchen, die schwerer sind als Wasser."],
+            ["Walzenströmung", "Eine kreisende Strömung, die durch einseitig eingeblasene Luft entsteht."]] },
+  { short: "Vorklärung", badge: "4", title: "Mechanische Reinigung: Vorklärbecken", pos: [375, 228], pct: 38, lbl: "Mechanisch gereinigt", col: "--w2",
+    text: "Hier fließe ich sehr langsam, etwa ein bis zwei Stunden lang. Feinere ungelöste Schmutzteilchen setzen sich ab und bilden Schlamm. Ein Räumer schiebt ihn in einen Trichter, von dort wird er zur Schlammbehandlung gepumpt. Was jetzt noch in mir steckt, ist vor allem gelöster Schmutz. Den kann man nicht absieben oder absetzen lassen, dafür braucht es Bakterien.",
+    fact: "Nach der Vorklärung ist schon etwa ein Drittel der organischen Verschmutzung entfernt, ganz ohne Chemie.",
+    terms: [["Primärschlamm", "Der Schlamm, der sich im Vorklärbecken absetzt."],
+            ["Gelöste Stoffe", "Stoffe, die im Wasser aufgelöst sind wie Zucker im Tee. Sie sinken nicht ab."]] },
+  { short: "Anaerobbecken", badge: "5", bio: true, title: "Biologische Reinigung: Anaerobbecken", pos: [479, 228], pct: 44, lbl: "Biologie startet", col: "--w2",
+    text: "Jetzt beginnt die biologische Reinigung. Hier vermische ich mich mit dem Belebtschlamm, einer Masse aus Milliarden Bakterien. Sie kommen als Rücklaufschlamm aus dem Nachklärbecken. In diesem Becken wird nur gerührt, es gibt weder Sauerstoff noch Nitrat. Spezielle Bakterien speichern hier Nährstoffe und geben dafür Phosphat ab. Später im belüfteten Becken nehmen sie mehr Phosphat auf, als sie abgegeben haben.",
+    fact: "Phosphor ist ein Pflanzennährstoff. Zu viel davon im Fluss lässt Algen massenhaft wachsen. Wenn sie absterben, verbrauchen Bakterien beim Abbau den Sauerstoff, und Fische ersticken. Das nennt man Eutrophierung.",
+    terms: [["anaerob", "Ohne Sauerstoff und ohne Nitrat."],
+            ["Belebtschlamm", "Flocken aus Bakterien, die in der biologischen Stufe den Schmutz abbauen."],
+            ["Bio-P", "Biologische Phosphorentfernung durch Bakterien, die Phosphat speichern."]] },
+  { short: "Denitrifikation", badge: "6", bio: true, title: "Biologische Reinigung: Denitrifikation", pos: [564, 228], pct: 60, lbl: "Stickstoff wird entfernt", col: "--w3",
+    text: "Auch hier wird nur gerührt, nicht belüftet. Aus dem belüfteten Becken wird Wasser mit Nitrat (NO₃⁻) zurückgepumpt. Weil kein gelöster Sauerstoff da ist, nutzen die Bakterien den Sauerstoff aus dem Nitrat zum Atmen. Übrig bleibt Stickstoffgas (N₂), das in die Luft entweicht. Als Nahrung dient ihnen der Kohlenstoff, der im Abwasser steckt.",
+    fact: "Die Luft besteht zu 78 Prozent aus Stickstoff. Das Gas aus diesem Becken ist also völlig harmlos.",
+    terms: [["anoxisch", "Kein gelöster Sauerstoff, aber Nitrat ist vorhanden."],
+            ["Interne Rezirkulation", "Nitrathaltiges Wasser wird aus dem belüfteten Becken zurück in die Denitrifikation gepumpt."]] },
+  { short: "Nitrifikation", badge: "7", bio: true, title: "Biologische Reinigung: Nitrifikation", pos: [660, 228], pct: 80, lbl: "Fast fertig", col: "--w3",
+    text: "Hier wird über Belüfter am Boden Luft eingeblasen. Die Bakterien atmen den Sauerstoff und bauen die restlichen organischen Stoffe ab. Nitrifikanten wandeln das Ammonium (NH₄⁺), das vor allem aus dem Urin stammt, in Nitrat um. Ein Teil davon wird zur Denitrifikation zurückgepumpt. Die Bio-P-Bakterien nehmen jetzt viel Phosphat auf, den Rest bindet ein Fällmittel.",
+    fact: "Die Gebläse für die Belüftung brauchen oft ungefähr die Hälfte des gesamten Stroms einer Kläranlage.",
+    terms: [["aerob", "Mit gelöstem Sauerstoff."],
+            ["Nitrifikation", "Umwandlung von Ammonium über Nitrit zu Nitrat durch Bakterien."],
+            ["Fällmittel", "Eisen- oder Aluminiumsalz, das Phosphat bindet, sodass es mit dem Schlamm absinkt."]] },
+  { short: "Nachklärung", badge: "8", title: "Nachklärbecken", pos: [774, 228], pct: 94, lbl: "Gereinigt", col: "--w4",
+    text: "Die Bakterien verklumpen zu Flocken und sinken ab. Der größte Teil fließt als Rücklaufschlamm zurück in die Biologie, damit dort immer genug Bakterien arbeiten. Weil sie sich ständig vermehren, entsteht aber zu viel Schlamm. Diesen Überschussschlamm schickt man zur Schlammbehandlung. Oben läuft das gereinigte Wasser ab, und ich mit ihm.",
+    fact: "Das Wasser sieht jetzt klar aus, ist aber kein Trinkwasser. Es enthält noch Keime und Spuren von Stoffen wie Medikamentenresten.",
+    terms: [["Rücklaufschlamm", "Belebtschlamm, der aus der Nachklärung zurück in die Biologie fließt."],
+            ["Überschussschlamm", "Der Teil des Belebtschlamms, der durch das Bakterienwachstum zu viel ist."]] },
+  { short: "Gewässer", badge: "9", title: "Zurück ins Gewässer", pos: [925, 360], pct: 100, lbl: "Gereinigt und geprüft", col: "--w5",
+    text: "Bevor ich in den Fluss darf, wird das Wasser gemessen. Es muss gesetzliche Grenzwerte einhalten, zum Beispiel für Stickstoff und Phosphor. Dann fließe ich weiter, vielleicht bis ins Meer. Irgendwann verdunste ich, werde zu einer Wolke und regne wieder herunter. Der Wasserkreislauf beginnt von vorn.",
+    fact: "Medikamentenreste schafft die biologische Reinigung nicht vollständig. Große Kläranlagen bekommen dafür nach neuen EU-Regeln bis 2045 eine vierte Reinigungsstufe.",
+    terms: [["Vorfluter", "Das Gewässer, in das eine Kläranlage das gereinigte Wasser einleitet."],
+            ["Grenzwert", "Die höchste erlaubte Menge eines Stoffs im gereinigten Abwasser."]] },
+  { short: "Schlammbehandlung", badge: "S", side: true, title: "Nebenweg: Schlammbehandlung", pos: [560, 228], pct: 100, lbl: "Tropfi schaut zu", col: "--w5",
+    text: "Mein Weg ist zu Ende, aber was passiert mit dem Schlamm aus Vor- und Nachklärung? Er wird zuerst eingedickt und kommt dann für etwa drei Wochen in den Faulbehälter. Dort ist es rund 37 °C warm, und es gibt keinen Sauerstoff. Bakterien bauen den Schlamm ab und bilden Faulgas, das zu etwa zwei Dritteln aus Methan besteht. Ein Blockheizkraftwerk erzeugt daraus Strom und Wärme.",
+    fact: "Viele Kläranlagen decken mit ihrem Faulgas einen großen Teil ihres eigenen Strombedarfs.",
+    terms: [["Faulung", "Abbau von Schlamm durch Bakterien ohne Sauerstoff. Dabei entsteht Faulgas."],
+            ["BHKW", "Blockheizkraftwerk: ein Motor, der aus Gas gleichzeitig Strom und Wärme erzeugt."]] }
 ];
 const MAIN = 9;
 
@@ -571,6 +602,7 @@ function go(i) {
   $("title").textContent = s.title;
   $("text").textContent = s.text;
   $("fact").textContent = s.fact;
+  $("terms").innerHTML = s.terms.map(([t, d]) => `<div><dt>${t}</dt><dd>${d}</dd></div>`).join("");
   $("cleanLabel").textContent = s.lbl;
   const bar = $("cleanBar");
   bar.style.width = s.pct + "%";
@@ -595,41 +627,91 @@ document.addEventListener("keydown", e => {
   if (e.key === "ArrowLeft") go(cur - 1);
 });
 
-const things = [
-  { name: "Klopapier", ok: "klo", why: "Klopapier zerfällt im Wasser ganz schnell in kleine Fetzen." },
-  { name: "Pipi und Kacka", ok: "klo", why: "Genau dafür ist das Klo da." },
-  { name: "Feuchttücher", ok: "muell", why: "Sie zerfallen nicht und verstopfen die Pumpen." },
-  { name: "Essensreste", ok: "muell", why: "Die gehören in die Biotonne. Im Kanal locken sie Ratten an." },
-  { name: "Bratfett", ok: "muell", why: "Fett wird im kalten Rohr hart wie Kerzenwachs und verstopft alles." },
-  { name: "Wattestäbchen", ok: "muell", why: "Sie sind so dünn, dass sie durch den Rechen rutschen können." },
-  { name: "Haare", ok: "muell", why: "Haare verknoten sich in den Rohren zu dicken Zöpfen." },
-  { name: "Pflaster", ok: "muell", why: "Pflaster kleben überall fest und zerfallen nicht." },
-  { name: "Alte Medizin", ok: "muell", why: "Die Kläranlage kann sie nicht ganz herausholen. Frag einen Erwachsenen, wohin damit." }
+const quiz = [
+  { st: 1, q: "Welche Aufgabe hat der Rechen?",
+    a: ["Er holt Grobstoffe wie Feuchttücher und Plastik aus dem Abwasser.", "Er entfernt gelöste Stoffe wie Phosphat.", "Er tötet Krankheitserreger ab.", "Er misst, wie verschmutzt das Wasser ist."],
+    exp: "Der Rechen ist die erste mechanische Stufe. Er hält Rechengut zurück, das sonst Pumpen und Rohre verstopfen würde. Gelöste Stoffe passen einfach durch." },
+  { st: 2, q: "Warum fließt das Wasser im Sandfang nur mit etwa 0,2 m/s?",
+    a: ["Damit Sand und Kies absinken, organische Teilchen aber weiterschwimmen.", "Damit sich das Wasser aufwärmen kann.", "Damit die Bakterien genug Zeit zum Fressen haben.", "Damit möglichst viel Schlamm entsteht."],
+    exp: "Mineralische Teilchen sind schwerer und sinken bei dieser Geschwindigkeit ab. Organische Schwebstoffe sollen weiterfließen, denn sie werden später biologisch abgebaut." },
+  { st: 2, q: "Wozu wird im Sandfang Luft eingeblasen?",
+    a: ["Die Walzenströmung hält Organisches in der Schwebe und treibt Fett nach oben.", "Damit Bakterien im Sandfang Sauerstoff zum Atmen haben.", "Um das Wasser abzukühlen.", "Um Gerüche aus dem Wasser zu blasen."],
+    exp: "Die einseitig eingeblasene Luft lässt das Wasser rotieren. Sand fällt in die Sandrinne, Fett schwimmt auf und wird in der Fettkammer abgeschöpft." },
+  { st: 3, q: "Was ist Primärschlamm?",
+    a: ["Der Schlamm, der sich im Vorklärbecken absetzt.", "Der Schlamm, der aus der Nachklärung zurück in die Biologie fließt.", "Der Sand aus der Sandrinne.", "Der Rest, der nach der Faulung übrig bleibt."],
+    exp: "Primärschlamm entsteht in der Vorklärung und wird direkt zur Schlammbehandlung gepumpt." },
+  { st: 3, q: "Warum braucht man nach der Vorklärung noch eine biologische Stufe?",
+    a: ["Weil gelöste Stoffe nicht absinken und nur von Bakterien abgebaut werden können.", "Weil das Wasser sonst zu kalt für den Fluss wäre.", "Weil im Vorklärbecken neuer Sand entsteht.", "Weil die Vorklärung nur Fett entfernt."],
+    exp: "Absetzen funktioniert nur bei ungelösten Teilchen. Gelöste Stoffe wie organische Verbindungen, Ammonium oder Phosphat müssen Bakterien umwandeln." },
+  { st: 4, q: "Was passiert im Anaerobbecken mit dem Phosphat?",
+    a: ["Bakterien geben Phosphat ab, um es später im belüfteten Becken verstärkt aufzunehmen.", "Phosphat wird zu Stickstoffgas umgewandelt.", "Phosphat verdunstet in die Luft.", "Phosphat wird mit dem Sand abgepumpt."],
+    exp: "Das ist der Bio-P-Effekt. Am Ende steckt mehr Phosphat in den Bakterien als vorher, und es verlässt die Anlage mit dem Überschussschlamm." },
+  { st: 5, q: "Was passiert bei der Denitrifikation?",
+    a: ["Bakterien wandeln Nitrat in Stickstoffgas um, das in die Luft entweicht.", "Bakterien wandeln Ammonium in Nitrat um.", "Schlamm wird zu Faulgas.", "Phosphat wird mit Eisensalz gebunden."],
+    exp: "Ohne gelösten Sauerstoff nutzen die Bakterien den Sauerstoff aus dem Nitrat. Übrig bleibt Stickstoffgas, aus dem die Luft ohnehin zu 78 % besteht." },
+  { st: 6, q: "Was bedeutet Nitrifikation?",
+    a: ["Ammonium wird mit Sauerstoff zu Nitrat umgewandelt.", "Nitrat wird zu Stickstoffgas umgewandelt.", "Nitrat wird in den Fluss geleitet.", "Stickstoff wird aus der Luft ins Wasser geblasen."],
+    exp: "Nitrifikanten brauchen Sauerstoff, deshalb wird dieses Becken belüftet. Das entstandene Nitrat wird zur Denitrifikation zurückgepumpt." },
+  { st: 6, q: "Wofür braucht eine Kläranlage meistens den meisten Strom?",
+    a: ["Für die Gebläse, die Luft ins Belebungsbecken drücken.", "Für den Rechen.", "Für die Beleuchtung.", "Für die Messgeräte im Ablauf."],
+    exp: "Die Belüftung braucht oft rund die Hälfte des Stroms. Deshalb wird der Sauerstoffgehalt im Becken genau geregelt." },
+  { st: 7, q: "Was ist Rücklaufschlamm?",
+    a: ["Belebtschlamm aus der Nachklärung, der zurück in die Biologie fließt.", "Schlamm, der aus dem Fluss zurückgepumpt wird.", "Schlamm aus dem Faulbehälter.", "Schlamm, der vom Rechen abfällt."],
+    exp: "So bleiben in der Biologie immer genug Bakterien. Was durch Wachstum zu viel ist, wird als Überschussschlamm abgezogen." },
+  { st: 9, q: "Was entsteht im Faulbehälter?",
+    a: ["Faulgas, das zu etwa zwei Dritteln aus Methan besteht.", "Reiner Sauerstoff.", "Trinkwasser.", "Nitrat."],
+    exp: "Ohne Sauerstoff bauen Bakterien den Schlamm ab. Das Faulgas wird im Blockheizkraftwerk zu Strom und Wärme." },
+  { st: 8, q: "Welche Stoffe schaffen herkömmliche Kläranlagen nicht vollständig?",
+    a: ["Medikamentenreste", "Sand", "Fett", "Feuchttücher"],
+    exp: "Für solche Spurenstoffe gibt es die vierte Reinigungsstufe, zum Beispiel mit Aktivkohle oder Ozon." },
+  { st: 1, q: "Was davon darf in die Toilette?",
+    a: ["Toilettenpapier", "Feuchttücher", "Bratfett", "Wattestäbchen"],
+    exp: "Nur Toilettenpapier zerfällt schnell genug. Feuchttücher verstopfen Pumpen, Fett wird im kalten Kanal fest, und Wattestäbchen rutschen durch den Rechen." }
 ];
-let answers = {};
-function renderGame() {
-  const box = $("items");
-  box.innerHTML = "";
-  things.forEach((t, i) => {
-    const a = answers[i];
-    const el = document.createElement("div");
-    el.className = "item" + (a ? (a === t.ok ? " ok" : " no") : "");
-    el.innerHTML = `<h3>${t.name}</h3>
-      <div class="choices">
-        <button type="button" class="choice${a === "klo" ? " picked" : ""}" id="c${i}k" ${a ? "disabled" : ""}>Ins Klo</button>
-        <button type="button" class="choice${a === "muell" ? " picked" : ""}" id="c${i}m" ${a ? "disabled" : ""}>In den Müll</button>
-      </div>
-      ${a ? `<p class="res"><b>${a === t.ok ? "Richtig!" : "Leider falsch."}</b> ${t.why}</p>` : ""}`;
-    box.appendChild(el);
-    el.querySelector(`#c${i}k`).addEventListener("click", () => { answers[i] = "klo"; renderGame(); });
-    el.querySelector(`#c${i}m`).addEventListener("click", () => { answers[i] = "muell"; renderGame(); });
-  });
-  const right = things.filter((t, i) => answers[i] === t.ok).length;
-  const done = Object.keys(answers).length;
-  $("score").textContent = done === things.length && right === things.length
-    ? `Alle ${right} richtig! Super!` : `${right} von ${things.length} richtig`;
+let qi = 0, qRight = 0, qOpts = [];
+const shuffle = arr => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function updateScore() { $("qScore").textContent = `${qRight} von ${quiz.length} richtig`; }
+function renderQuiz() {
+  const card = $("qCard");
+  updateScore();
+  if (qi >= quiz.length) {
+    const msg = qRight >= 12 ? "Stark! Du könntest glatt selbst eine Führung durch die Kläranlage machen."
+      : qRight >= 8 ? "Gut gemacht. Schau dir die Stationen, bei denen du unsicher warst, noch einmal in der Nahaufnahme an."
+      : "Ein guter Anfang. Klick dich noch einmal durch die Stationen und versuch es dann erneut.";
+    card.innerHTML = `<p class="eyebrow">Ergebnis</p><h3 class="qq">${qRight} von ${quiz.length} Fragen richtig</h3><p class="qexp">${msg}</p>
+      <div class="qnav"><button type="button" class="btn primary" id="qRestart">Nochmal spielen</button></div>`;
+    $("qRestart").addEventListener("click", () => { qi = 0; qRight = 0; renderQuiz(); $("qCard").scrollIntoView({ block: "nearest" }); });
+    return;
+  }
+  const q = quiz[qi];
+  qOpts = shuffle(q.a.map((t, k) => ({ t, ok: k === 0 })));
+  card.innerHTML = `<p class="eyebrow">Frage ${qi + 1} von ${quiz.length} · ${stations[q.st].short}</p>
+    <div class="bar"><i style="width:${(qi / quiz.length * 100).toFixed(1)}%;background-color:var(--w5)"></i></div>
+    <h3 class="qq">${q.q}</h3>
+    <div class="qopts">${qOpts.map((o, k) => `<button type="button" class="qopt" id="qo${k}">${o.t}</button>`).join("")}</div>
+    <div id="qFeedback"></div>`;
+  qOpts.forEach((o, k) => $("qo" + k).addEventListener("click", () => answer(k)));
 }
-$("reset").addEventListener("click", () => { answers = {}; renderGame(); });
+function answer(k) {
+  const q = quiz[qi], ok = qOpts[k].ok;
+  if (ok) qRight++;
+  qOpts.forEach((o, j) => {
+    const b = $("qo" + j);
+    b.disabled = true;
+    if (o.ok) b.classList.add("right");
+    else if (j === k) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+  updateScore();
+  $("qFeedback").innerHTML = `<p class="qexp"><b class="${ok ? "ok" : "no"}">${ok ? "Richtig." : "Nicht ganz."}</b> ${q.exp}</p>
+    <div class="qnav" style="margin-top:12px">
+      <button type="button" class="btn small" id="qSee">Station ansehen</button>
+      <button type="button" class="btn small primary" id="qNext">${qi === quiz.length - 1 ? "Zum Ergebnis" : "Nächste Frage"}</button>
+    </div>`;
+  $("qSee").addEventListener("click", () => openDetail(q.st));
+  $("qNext").addEventListener("click", () => { qi++; renderQuiz(); const f = $("qCard").querySelector("button"); if (f) f.focus({ preventScroll: true }); });
+  $("qNext").focus();
+}
 
 /* ---------- Detailansichten ---------- */
 const R = (n, f) => Array.from({ length: n }, (_, k) => f(k)).join("");
@@ -665,7 +747,7 @@ const details = [
       <rect class="concrete" x="92" y="140" width="24" height="30" rx="3"/>
       <path class="concrete" d="M112 170 H156 Q156 192 132 194 H120 Z"/>
       <rect class="concrete" x="120" y="192" width="18" height="8"/>
-      ${L(162, 162, "Klo")}
+      ${L(162, 162, "Toilette")}
       <rect class="concrete" x="212" y="144" width="52" height="56" rx="4"/>
       <circle class="win" cx="238" cy="174" r="17"/>
       <circle class="d-spin" cx="238" cy="174" r="10" style="fill:none;stroke:var(--w4);stroke-width:4;stroke-dasharray:8 6"/>
@@ -676,7 +758,7 @@ const details = [
       ${L(440, 326, "Kanal unter der Straße", "", "middle")}
       ${L(590, 236, "zur Kläranlage →", "", "end")}`,
     lead: "Alles Wasser, das im Haus im Abfluss verschwindet, landet im Kanal. Hier beginnt Tropfis Reise.",
-    list: ["Ungefähr ein Viertel unseres Wassers spülen wir das Klo hinunter.",
+    list: ["Ungefähr ein Viertel unseres Trinkwassers verwenden wir für die Toilettenspülung.",
            "Im Mischsystem fließt auch das Regenwasser von Dächern und Straßen in denselben Kanal. Im Trennsystem hat es einen eigenen Kanal.",
            "Wo es bergab geht, fließt das Abwasser von allein. Sonst helfen Pumpwerke nach."],
     num: "15-mal", numText: "um die Erde würden alle öffentlichen Kanäle in Deutschland reichen, wenn man sie aneinanderlegt." },
@@ -706,7 +788,7 @@ const details = [
       ${L(336, 92, "Rechen", "", "end")}`,
     lead: "Der Rechen ist wie ein riesiger Kamm, der den groben Müll aus dem Wasser kämmt.",
     list: ["Oft gibt es zuerst einen Grobrechen mit großen Lücken und danach einen Feinrechen.",
-           "Hängen bleibt nur Abfall wie Feuchttücher, Wattestäbchen, Plastik oder Spielzeug. Klopapier und Kacka zerfallen schon im Kanal in kleine Teile und schwimmen durch.",
+           "Hängen bleibt nur Abfall wie Feuchttücher, Wattestäbchen, Plastik oder Spielzeug. Toilettenpapier und Fäkalien zerfallen schon im Kanal in kleine Teile und passen durch.",
            "Eine Räumharke hebt das Rechengut automatisch aus dem Wasser.",
            "In der Rechengut-Waschpresse wird es gewaschen und ausgepresst. Danach wird es verbrannt."],
     num: "6 mm", numText: "Lücke zwischen den Stäben beim Feinrechen. Das ist dünner als ein Bleistift!" },
@@ -815,7 +897,7 @@ const details = [
            "Der Schlamm heißt Primärschlamm. Er geht auf den Nebenweg zur Schlammbehandlung."],
     num: "1–2 Std.", numText: "bleibt das Wasser ungefähr in diesem Becken." },
 
-  { title: "Biologie 1: Bio-P-Becken",
+  { title: "Anaerobbecken (Bio-P)",
     svg: `${ground(50)}
       ${bioTank("w2")}
       ${mixer(50, 230)}
@@ -827,22 +909,22 @@ const details = [
         ${bact(402, 128, 15, 0)}${bact(492, 112, -20, -.4)}${bact(448, 196, 30, -.8)}${bact(520, 214, -25, -.2)}${bact(396, 250, 5, -.6)}
         ${[[402,128,-30,-26],[492,112,24,-30],[448,196,-34,22],[520,214,28,26],[396,250,30,20]].map(([x, y, rx, ry], k) =>
           `<g class="d-release" style="--rx:${rx}px;--ry:${ry}px;animation-delay:${(-k * 0.7).toFixed(1)}s">${tok(x, y, "tok-p", "P")}</g>`).join("")}`)}
-      ${L(395, 332, "Bakterien speichern Futter und geben Phosphat ab", "dsmall", "middle")}`,
+      ${L(395, 332, "Bakterien speichern Nährstoffe und geben Phosphat ab", "dsmall", "middle")}`,
     lead: "Das erste Becken der Biologie ist anaerob: Es gibt weder Sauerstoff noch Nitrat.",
     list: ["Rührwerke halten Wasser und Bakterien in Bewegung, damit nichts absinkt.",
-           "Spezielle Bakterien speichern hier Futter und geben dafür Phosphat ab.",
+           "Spezielle Bakterien speichern hier Nährstoffe als Energiereserve und geben dafür Phosphat ab.",
            "Im belüfteten Becken nehmen sie danach mehr Phosphat auf, als sie abgegeben haben. Fachleute nennen das biologische Phosphorelimination, kurz Bio-P.",
            "Was die Bakterien nicht schaffen, bindet ein Fällmittel aus Eisen- oder Aluminiumsalz."],
     num: "bis zu 3-mal", numText: "so viel Phosphor wie normaler Belebtschlamm kann Bio-P-Schlamm speichern." },
 
-  { title: "Biologie 2: Deni-Becken",
+  { title: "Denitrifikation",
     svg: `${ground(50)}
       ${bioTank("w3")}
       ${mixer(50, 230)}
       <path class="d-flowline" d="M106 230 Q250 240 262 170 Q252 110 150 122 Q76 132 80 190"/>
       <path class="pipe thin" d="M330 30 H262 V100"/>
       <path class="d-flow" style="stroke:var(--recirc)" d="M330 30 H262 V100"/>
-      ${L(326, 22, "Nitrat aus dem Nitri-Becken", "dsmall", "end")}
+      ${L(326, 22, "Interne Rezirkulation (Nitrat)", "dsmall", "end")}
       ${R(8, k => `<circle class="n2bub d-rise" cx="${110 + k * 18}" cy="${230 + (k % 3) * 10}" r="${3 + (k % 2)}" style="animation-name:rise2;--h:${140 + (k % 3) * 10}px;opacity:0;animation-delay:${(-k * 0.35).toFixed(2)}s"/>`)}
       ${R(3, k => `<text class="dlabel dsmall d-up" x="${100 + k * 60}" y="80" style="animation-delay:${(-k * 1).toFixed(1)}s">N₂</text>`)}
       ${L(160, 156, "Rühren ohne Luft", "onwater", "middle")}
@@ -853,13 +935,13 @@ const details = [
         ${[[400,124],[490,104],[440,194],[510,212],[382,234]].map(([x, y], k) =>
           `<circle class="n2bub" cx="${x}" cy="${y}" r="5" style="stroke:var(--ink);animation-name:rise2;--h:60px;animation-duration:2.6s;animation-delay:${(-k * 0.5).toFixed(1)}s"/>`).join("")}`)}
       ${L(395, 332, "Bakterien atmen Nitrat und machen Stickstoffgas daraus", "dsmall", "middle")}`,
-    lead: "Im Deni-Becken wird aus Nitrat Stickstoffgas. Das Becken ist anoxisch: kein gelöster Sauerstoff, aber Nitrat.",
+    lead: "In der Denitrifikation wird aus Nitrat Stickstoffgas. Das Becken ist anoxisch: kein gelöster Sauerstoff, aber Nitrat.",
     list: ["Das Nitrat kommt mit der internen Rezirkulation aus dem belüfteten Becken zurück.",
-           "Als Futter brauchen die Bakterien Kohlenstoff aus dem Abwasser. Darum liegt dieses Becken vor dem belüfteten Becken. Das nennt man vorgeschaltete Denitrifikation.",
+           "Als Nahrung brauchen die Bakterien Kohlenstoff aus dem Abwasser. Darum liegt dieses Becken vor dem belüfteten Becken. Das nennt man vorgeschaltete Denitrifikation.",
            "Das Stickstoffgas steigt in feinen Bläschen auf und entweicht in die Luft."],
-    num: "78 %", numText: "der Luft sind Stickstoff. Dorthin kehrt der Stickstoff aus dem Pipi zurück." },
+    num: "78 %", numText: "der Luft sind Stickstoff. Dorthin kehrt der Stickstoff aus dem Abwasser zurück." },
 
-  { title: "Biologie 3: Nitri-Becken",
+  { title: "Nitrifikation",
     svg: `${ground(50)}
       ${bioTank("w3")}
       <rect class="house" x="26" y="6" width="58" height="36" rx="3"/>
@@ -879,11 +961,11 @@ const details = [
         ${[[432,168],[528,184],[480,236],[418,280],[540,120]].map(([x, y], k) =>
           `<g class="d-swapA" style="animation-delay:${(-k * 0.9).toFixed(1)}s">${tok(x, y, "tok-a", "NH₄", true)}</g><g class="d-swapB" style="animation-delay:${(-k * 0.9).toFixed(1)}s">${tok(x, y, "tok-n", "NO₃")}</g>`).join("")}
         ${R(10, k => `<circle class="gbub d-rise" cx="${360 + k * 20}" cy="296" r="3" style="--h:230px;animation-duration:3.4s;animation-delay:${(-k * 0.34).toFixed(2)}s"/>`)}`)}
-      ${L(395, 332, "Aus Ammonium wird Nitrat, und Schmutz wird gefressen", "dsmall", "middle")}`,
-    lead: "Im Nitri-Becken wird belüftet. Hier wird das meiste Futter abgebaut, und aus Ammonium wird Nitrat.",
+      ${L(395, 332, "Aus Ammonium wird Nitrat, organische Stoffe werden abgebaut", "dsmall", "middle")}`,
+    lead: "In der Nitrifikation wird belüftet. Hier wird der Großteil der organischen Stoffe abgebaut, und aus Ammonium wird Nitrat.",
     list: ["Gebläse drücken Luft durch Belüfter am Boden. Je feiner die Blasen, desto mehr Sauerstoff löst sich im Wasser.",
            "Nitrifikanten sind langsam wachsende Bakterien. Sie wandeln Ammonium erst in Nitrit und dann in Nitrat um.",
-           "Ein Teil des Wassers fließt mit dem Nitrat zurück ins Deni-Becken.",
+           "Ein Teil des Wassers fließt mit dem Nitrat zurück in die Denitrifikation.",
            "Oft wird hier ein Fällmittel zugegeben, das restliches Phosphat bindet."],
     num: "ca. 2 mg/l", numText: "Sauerstoff halten Messgeräte hier im Wasser. Mehr wäre Stromverschwendung." },
 
@@ -1001,7 +1083,7 @@ const details = [
            "Faulgas besteht zu ungefähr zwei Dritteln aus Methan. Im Blockheizkraftwerk (BHKW) wird daraus Strom und Wärme.",
            "Eine Zentrifuge schleudert Wasser aus dem ausgefaulten Schlamm. Danach wird er meist verbrannt.",
            "Ab 2029 müssen große Kläranlagen Phosphor aus dem Klärschlamm zurückgewinnen, zum Beispiel aus der Asche."],
-    num: "37 °C", numText: "So warm ist es im Faulbehälter. Genauso warm wie in deinem Körper." }
+    num: "37 °C", numText: "So warm ist es im Faulbehälter. Bei dieser Temperatur arbeiten die Faulbakterien besonders gut." }
 ];
 
 const det = $("detail");
@@ -1045,7 +1127,7 @@ document.addEventListener("keydown", e => {
 });
 
 go(0);
-renderGame();
+renderQuiz();
 </script>
 </body>
 </html>

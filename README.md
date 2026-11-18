@@ -1,6 +1,6 @@
 # Tropfis Reise durch die Kläranlage
 
-Eine interaktive Kläranlage für Kinder. Der Wassertropfen Tropfi reist durch die Reinigungsstufen einer kommunalen Kläranlage. Zu jeder Station gibt es eine animierte Nahaufnahme mit Extra-Infos.
+Eine interaktive Kläranlage für Kinder ab etwa 10 Jahren (Klasse 5 bis 8). Der Wassertropfen Tropfi reist durch die Reinigungsstufen einer kommunalen Kläranlage. Zu jeder Station gibt es eine animierte Nahaufnahme mit Extra-Infos.
 
 ## Stationen
 
@@ -10,9 +10,9 @@ Eine interaktive Kläranlage für Kinder. Der Wassertropfen Tropfi reist durch d
 2. Rechen
 3. Belüfteter Sand- und Fettfang (mineralische Stoffe sinken ab, Organisches schwebt weiter)
 4. Vorklärbecken
-5. Biologie 1: Bio-P-Becken (anaerob)
-6. Biologie 2: Denitrifikation (anoxisch, vorgeschaltet)
-7. Biologie 3: Nitrifikation (belüftet)
+5. Anaerobbecken (Bio-P)
+6. Denitrifikation (anoxisch, vorgeschaltet)
+7. Nitrifikation (belüftet)
 8. Nachklärbecken
 9. Ablauf in den Fluss
 
@@ -20,7 +20,7 @@ Eine interaktive Kläranlage für Kinder. Der Wassertropfen Tropfi reist durch d
 
 Eindicker, Faulbehälter, Gasspeicher, BHKW und Entwässerung
 
-Dazu gibt es das Spiel „Klo-Check: Was darf ins Klo?“.
+Jede Station erklärt die wichtigsten Fachbegriffe. Am Ende gibt es ein Wissensquiz mit 13 Fragen zu allen Stationen.
 
 ## Benutzung
 
@@ -34,4 +34,4 @@ Bedienung:
 
 ## Hinweis
 
-Die Zahlen sind kindgerecht vereinfachte Richtwerte und gelten nicht für eine bestimmte Anlage.
+Die Zahlen sind vereinfachte Richtwerte und gelten nicht für eine bestimmte Anlage.
