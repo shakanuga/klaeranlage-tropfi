@@ -2,6 +2,9 @@
 
 Eine interaktive Kläranlage für Kinder ab etwa 10 Jahren (Klasse 5 bis 8). Der Wassertropfen Tropfi reist durch die Reinigungsstufen einer kommunalen Kläranlage. Zu jeder Station gibt es eine animierte Nahaufnahme mit Extra-Infos.
 
+![Tropfis Reise durch die Kläranlage – Übersicht](docs/screenshots/uebersicht.png)
+
+
 ## Stationen
 
 **Wasserweg**
@@ -21,6 +24,13 @@ Eine interaktive Kläranlage für Kinder ab etwa 10 Jahren (Klasse 5 bis 8). Der
 Eindicker, Faulbehälter, Gasspeicher, BHKW und Entwässerung
 
 Jede Station erklärt die wichtigsten Fachbegriffe. Am Ende gibt es ein Wissensquiz mit 13 Fragen zu allen Stationen.
+
+## Screenshots
+
+<table>
+<tr><td width="50%"><img src="docs/screenshots/station-nitrifikation.png" alt="Station 7: Nitrifikation mit Fachbegriffen"><br><sub>Station 7: Nitrifikation mit Fachbegriffen</sub></td><td width="50%"><img src="docs/screenshots/nahaufnahme-sandfang.png" alt="Nahaufnahme: Sand- und Fettfang"><br><sub>Nahaufnahme: Sand- und Fettfang</sub></td></tr>
+<tr><td width="50%"><img src="docs/screenshots/quiz.png" alt="Wissensquiz"><br><sub>Wissensquiz</sub></td><td width="50%"><img src="docs/screenshots/mobil.png" alt="Auf dem Handy"><br><sub>Auf dem Handy</sub></td></tr>
+</table>
 
 ## Benutzung
 
