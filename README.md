@@ -8,7 +8,7 @@ Eine interaktive Kläranlage für Kinder. Der Wassertropfen Tropfi reist durch d
 
 1. Zuhause und Kanal
 2. Rechen
-3. Belüfteter Sand- und Fettfang
+3. Belüfteter Sand- und Fettfang (mineralische Stoffe sinken ab, Organisches schwebt weiter)
 4. Vorklärbecken
 5. Biologie 1: Bio-P-Becken (anaerob)
 6. Biologie 2: Denitrifikation (anoxisch, vorgeschaltet)
